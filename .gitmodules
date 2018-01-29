@@ -1,0 +1,6 @@
+[submodule "vendor/ttvfs"]
+	path = vendor/ttvfs
+	url = https://github.com/fgenesis/ttvfs
+[submodule "vendor/ttvfs_dat2"]
+	path = vendor/ttvfs_dat2
+	url = https://github.com/falltergeist/ttvfs_dat2

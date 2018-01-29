@@ -223,7 +223,8 @@ Mve::File* ResourceManager::mveFileType(const string& filename)
 
 Bio::File* ResourceManager::bioFileType(const string& filename)
 {
-    return _datFileItem<Bio::File>(filename);
+    //return _datFileItem<Bio::File>(filename);
+    return nullptr;
 }
 
 Map::File* ResourceManager::mapFileType(const string& filename)

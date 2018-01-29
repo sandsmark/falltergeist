@@ -81,6 +81,12 @@ if(NOT GLM_FOUND)
 endif(NOT GLM_FOUND)
 include_directories(${GLM_INCLUDE_DIR})
 
+add_subdirectory(vendor/ttvfs)
+include_directories(${TTVFS_INCLUDE_DIRS})
+
+add_subdirectory(vendor/ttvfs_dat2)
+include_directories(${TTVFS_DAT2_INCLUDE_DIRS})
+
 file(GLOB_RECURSE SOURCES  src/*.cpp)
 
 if(MSVC)
@@ -109,7 +115,7 @@ endif()
 if (CONAN_LIBS)
 	target_link_libraries(falltergeist ${CONAN_LIBS})
 else()
-	target_link_libraries(falltergeist ${ZLIB_LIBRARIES} ${SDL2_LIBRARY} ${SDL_MIXER_LIBRARY} ${SDL_IMAGE_LIBRARY} ${OPENGL_gl_LIBRARY} ${GLEW_LIBRARY})
+	target_link_libraries(falltergeist ${ZLIB_LIBRARIES} ${SDL2_LIBRARY} ${SDL_MIXER_LIBRARY} ${SDL_IMAGE_LIBRARY} ${OPENGL_gl_LIBRARY} ${GLEW_LIBRARY} ttvfs ttvfs_dat2)
 endif()
 
 include(cmake/install/windows.cmake)

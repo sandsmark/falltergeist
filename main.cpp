@@ -26,13 +26,28 @@
 #include "src/Logger.h"
 #include "src/Settings.h"
 #include "src/State/Start.h"
+#include "src/Format/Bio/File.h"
 
 // Third party includes
+#include <ttvfs.h>
+#include <ttvfs_dat2.h>
 
 using namespace Falltergeist;
 
 int main(int argc, char* argv[])
 {
+    ttvfs::Root root;
+
+    root.AddLoader(new ttvfs::DiskLoader);
+    root.AddArchiveLoader(new ttvfs::VFSDat2ArchiveLoader);
+    root.AddArchive("/media/alexeevdv/FALLOUT2/master.dat");
+    root.Mount("/media/alexeevdv/FALLOUT2/master.dat", "");
+
+    ttvfs::CountedPtr<ttvfs::File> file = root.GetFile("premade/combat.bio");
+    auto bio = new Format::Bio::File(file);
+    std::cout << bio->text() << std::endl;
+    return 0;
+
     try
     {
         auto game = Game::Game::getInstance();

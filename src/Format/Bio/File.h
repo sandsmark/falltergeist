@@ -29,36 +29,28 @@
 #include <string>
 
 // Falltergeist includes
-#include "../../Format/Dat/Item.h"
+#include "../../Format/BaseFormatFile.h"
 
 // Third party includes
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Dat
-{
-class Stream;
-}
+    namespace Format
+    {
+        namespace Bio
+        {
+            class File : public BaseFormatFile
+            {
+                public:
+                    File(ttvfs::CountedPtr<ttvfs::File> file);
 
-namespace Bio
-{
+                    std::string text();
 
-class File : public Dat::Item
-{
+                protected:
+                    std::string _text;
 
-public:
-    File(Dat::Stream&& stream);
-
-    std::string text();
-
-protected:
-    std::string _text;
-
-};
-
-}
-}
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_BIO_FILE_H

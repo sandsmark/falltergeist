@@ -22,35 +22,31 @@
  * SOFTWARE.
  */
 
+#ifndef FALLTERGEIST_FORMAT_BASEFORMATFILE_H
+#define FALLTERGEIST_FORMAT_BASEFORMATFILE_H
+
 // C++ standard includes
-#include <cstdint>
 
 // Falltergeist includes
-#include "../../Format/Dat/Stream.h"
-#include "../../Format/Bio/File.h"
 
 // Third party includes
+#include <ttvfs.h>
 
 namespace Falltergeist
 {
     namespace Format
     {
-        namespace Bio
+        class BaseFormatFile
         {
-            File::File(ttvfs::CountedPtr<ttvfs::File> file) : BaseFormatFile(file)
-            {
-                file->open("r");
-                file->seek(0, SEEK_SET);
-                _text.resize(file->size());
-                file->read(&_text[0], file->size());
-                file->close();
-            }
+            public:
+                BaseFormatFile(ttvfs::CountedPtr<ttvfs::File> file);
+                virtual ~BaseFormatFile();
 
-            std::string File::text()
-            {
-                return _text;
-            }
-
-        }
+            private:
+                ttvfs::CountedPtr<ttvfs::File> _file;
+        };
     }
 }
+
+
+#endif //FALLTERGEIST_FORMAT_BASEFORMATFILE_H

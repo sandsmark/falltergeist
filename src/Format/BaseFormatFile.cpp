@@ -23,11 +23,9 @@
  */
 
 // C++ standard includes
-#include <cstdint>
 
 // Falltergeist includes
-#include "../../Format/Dat/Stream.h"
-#include "../../Format/Bio/File.h"
+#include "../Format/BaseFormatFile.h"
 
 // Third party includes
 
@@ -35,22 +33,13 @@ namespace Falltergeist
 {
     namespace Format
     {
-        namespace Bio
+        BaseFormatFile::BaseFormatFile(ttvfs::CountedPtr<ttvfs::File> file)
         {
-            File::File(ttvfs::CountedPtr<ttvfs::File> file) : BaseFormatFile(file)
-            {
-                file->open("r");
-                file->seek(0, SEEK_SET);
-                _text.resize(file->size());
-                file->read(&_text[0], file->size());
-                file->close();
-            }
+            _file = file;
+        }
 
-            std::string File::text()
-            {
-                return _text;
-            }
-
+        BaseFormatFile::~BaseFormatFile()
+        {
         }
     }
 }
