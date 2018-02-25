@@ -55,8 +55,10 @@ namespace Falltergeist
         Script::Script(const std::string& filename, Game::Object* owner)
         {
             _owner = owner;
-            _script = ResourceManager::get(filename);
-            if (!_script) throw Exception("Script::VM() - script is null: " + filename);
+            _script = ResourceManager::get<Format::Int::File>(filename);
+            if (!_script) {
+                throw Exception("Script::VM() - script is null: " + filename);
+            }
         }
 
         Script::~Script()
@@ -151,7 +153,7 @@ namespace Falltergeist
             return msg->message(msg_num)->sound();
         }
 
-        Format::Int::File* Script::script()
+        std::shared_ptr<Format::Int::File> Script::script()
         {
             return _script;
         }

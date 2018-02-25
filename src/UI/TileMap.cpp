@@ -28,6 +28,7 @@
 
 // Falltergeist includes
 #include "../Format/Lst/File.h"
+#include "../Format/Pal/File.h"
 #include "../Game/Game.h"
 #include "../Graphics/Point.h"
 #include "../Graphics/Renderer.h"

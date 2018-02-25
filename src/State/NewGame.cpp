@@ -28,6 +28,7 @@
 #include "../Event/State.h"
 #include "../functions.h"
 #include "../Format/Bio/File.h"
+#include "../Format/Gcd/File.h"
 #include "../Game/DudeObject.h"
 #include "../Game/Game.h"
 #include "../Graphics/Renderer.h"

@@ -31,6 +31,7 @@
 
 // Falltergeist includes
 #include "Base/Singleton.h"
+#include "Logger.h"
 
 // Third party includes
 #include <ttvfs.h>
@@ -81,15 +82,39 @@ namespace Falltergeist
             void shutdown();
 
             template <class T>
-            static std::shared_ptr<T> get(const std::string& filename);
+            static std::shared_ptr<T> get(const std::string& filename)
+            {
+                // TODO seems to be unnecessary since all filenames already should be in lowercase
+                //std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
-        protected:
+                // Return item from cache
+                auto itemIt = _cachedFiles.find(filename);
+                if (itemIt != _cachedFiles.end()) {
+                    auto itemPtr = std::dynamic_pointer_cast<T>(itemIt->second);
+                    if (!itemPtr) {
+                        Logger::error("RESOURCE MANAGER") << "Requested file type does not match type in the cache: " << filename << std::endl;
+                    }
+                    return itemPtr;
+                }
+
+                ttvfs::CountedPtr<ttvfs::File> file = _root.GetFile(filename.c_str());
+                if (!file) {
+                    return nullptr;
+                }
+                auto ptr = std::make_shared<T>(file);
+                _cachedFiles.emplace(filename, ptr);
+                return ptr;
+            }
+
+    protected:
             friend class Base::Singleton<ResourceManager>;
 
             static std::unordered_map<std::string, std::shared_ptr<Format::BaseFormatFile>> _cachedFiles;
             std::unordered_map<std::string, std::unique_ptr<Graphics::Texture>> _textures;
             std::unordered_map<std::string, std::unique_ptr<Graphics::Font>> _fonts;
             std::unordered_map<std::string, std::unique_ptr<Graphics::Shader>> _shaders;
+
+            static ttvfs::Root _root;
 
             ResourceManager();
             ResourceManager(const ResourceManager&) = delete;

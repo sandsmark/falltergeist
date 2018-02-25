@@ -68,53 +68,26 @@ namespace Falltergeist
     using namespace Format;
     using Helpers::CritterAnimationHelper;
 
+    ttvfs::Root ResourceManager::_root;
+    std::unordered_map<std::string, std::shared_ptr<Format::BaseFormatFile>> ResourceManager::_cachedFiles;
+
     ResourceManager::ResourceManager()
     {
-        // TODO: mount DAT archives to VFS
-        // TODO: mount custom paths to VFS
-        /*
+        _root.AddLoader(new ttvfs::DiskLoader);
+        _root.AddArchiveLoader(new ttvfs::Dat2ArchiveLoader);
+
         for (auto filename : CrossPlatform::findFalloutDataFiles())
         {
             string path = CrossPlatform::findFalloutDataPath() + "/" + filename;
-            _datFiles.push_back(std::make_unique<Dat::File>(path));
+            _root.AddArchive(path.c_str());
+            _root.Mount(path.c_str(), "");
         }
-        */
     }
 
     // static
     ResourceManager* ResourceManager::getInstance()
     {
         return Base::Singleton<ResourceManager>::get();
-    }
-
-    template <class T>
-    std::shared_ptr<T> ResourceManager::get(const std::string& filename)
-    {
-        // TODO seems to be unnecessary since all filenames already should be in lowercase
-        //std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
-
-        // Return item from cache
-        auto itemIt = _cachedFiles.find(filename);
-        if (itemIt != _cachedFiles.end()) {
-            auto itemPtr = std::dynamic_pointer_cast<T>(itemIt->second);
-            if (!itemPtr) {
-                Logger::error("RESOURCE MANAGER") << "Requested file type does not match type in the cache: " << filename << endl;
-            }
-            return itemPtr;
-        }
-
-        /*
-         * TODO load file from VFS and create it instance
-        T* itemPtr = nullptr;
-        _loadStreamForFile(filename, [this, &filename, &itemPtr](Dat::Stream&& stream) {
-            auto item = std::make_unique<T>(std::move(stream));
-            itemPtr = item.get();
-            item->setFilename(filename);
-            _datItems.emplace(filename, std::move(item));
-        });
-         */
-
-        return nullptr;
     }
 
     Graphics::Texture* ResourceManager::texture(const string& filename)

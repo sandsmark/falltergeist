@@ -28,6 +28,7 @@
 #include "../Event/Keyboard.h"
 #include "../Event/Mouse.h"
 #include "../Format/Lst/File.h"
+#include "../Format/Mve/File.h"
 #include "../Format/Sve/File.h"
 #include "../Game/Game.h"
 #include "../Graphics/Renderer.h"

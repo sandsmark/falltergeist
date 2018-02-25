@@ -37,6 +37,7 @@ namespace Falltergeist
         {
             File::File(ttvfs::CountedPtr<ttvfs::File> file) : BaseFormatFile(file)
             {
+                _file->open();
                 _file->seek(0, SEEK_SET);
 
                 // Signature

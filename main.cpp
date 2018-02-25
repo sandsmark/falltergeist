@@ -36,26 +36,6 @@ using namespace Falltergeist;
 
 int main(int argc, char* argv[])
 {
-    std::shared_ptr<Format::Bio::File> sh(new Format::Bio::File(nullptr));
-
-
-
-
-
-    ttvfs::Root root;
-
-    root.AddLoader(new ttvfs::DiskLoader);
-    root.AddArchiveLoader(new ttvfs::Dat2ArchiveLoader);
-    root.AddArchive("/media/alexeevdv/FALLOUT2/master.dat");
-    root.Mount("/media/alexeevdv/FALLOUT2/master.dat", "");
-
-    ttvfs::CountedPtr<ttvfs::File> file = root.GetFile("premade/combat.bio");
-    auto bio = new Format::Bio::File(file);
-    std::cout << bio->text() << std::endl;
-    return 0;
-
-
-
     try
     {
         auto game = Game::Game::getInstance();

@@ -73,7 +73,7 @@ namespace Falltergeist
                 bool hasFunction(const std::string& name);
 
                 void call(const std::string& name);
-                Format::Int::File* script();
+                std::shared_ptr<Format::Int::File> script();
 
                 Game::Object* owner();
 
