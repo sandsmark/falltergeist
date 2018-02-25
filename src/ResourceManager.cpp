@@ -68,21 +68,17 @@ namespace Falltergeist
     using namespace Format;
     using Helpers::CritterAnimationHelper;
 
-    namespace
-    {
-        Pro::File* fetchProFileType(unsigned int PID)
-        {
-            return ResourceManager::getInstance()->proFileType(PID);
-        }
-    }
-
     ResourceManager::ResourceManager()
     {
+        // TODO: mount DAT archives to VFS
+        // TODO: mount custom paths to VFS
+        /*
         for (auto filename : CrossPlatform::findFalloutDataFiles())
         {
             string path = CrossPlatform::findFalloutDataPath() + "/" + filename;
             _datFiles.push_back(std::make_unique<Dat::File>(path));
         }
+        */
     }
 
     // static
@@ -91,59 +87,24 @@ namespace Falltergeist
         return Base::Singleton<ResourceManager>::get();
     }
 
-    void ResourceManager::_loadStreamForFile(string filename, std::function<void(Dat::Stream&&)> callback) {
-        // Searching file in Fallout data directory
-        {
-            string path = CrossPlatform::findFalloutDataPath() + "/" + filename;
-
-            ifstream stream;
-            stream.open(path, ios_base::binary);
-            if (stream.is_open()) {
-                Logger::debug("RESOURCE MANAGER") << "Loading file: " << filename << " [FROM FALLOUT DATA DIR]" << endl;
-            } else {
-                path = CrossPlatform::findFalltergeistDataPath() + "/" + filename;
-                stream.open(path, ios_base::binary);
-                if (stream.is_open()) {
-                    Logger::debug("RESOURCE MANAGER") << "Loading file: " << filename << " [FROM FALLTERGEIST DATA DIR]" << endl;
-                }
-            }
-
-            if (stream.is_open()) {
-                callback(Dat::Stream(stream));
-                stream.close();
-                return;
-            }
-        }
-
-        // Search in DAT files
-        for (auto& datfile : _datFiles) {
-            auto entry = datfile->entry(filename);
-            if (entry != nullptr) {
-                Logger::debug("RESOURCE MANAGER") << "Loading file: " << filename << " [FROM " << datfile->filename() << "]" << endl;
-                callback(Dat::Stream(*entry));
-                return;
-            }
-        }
-        Logger::error("RESOURCE MANAGER") << "Loading file: " << filename << " [ NOT FOUND]" << endl;
-    }
-
     template <class T>
-    T* ResourceManager::_datFileItem(string filename)
+    std::shared_ptr<T> ResourceManager::get(const std::string& filename)
     {
-        std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+        // TODO seems to be unnecessary since all filenames already should be in lowercase
+        //std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
         // Return item from cache
-        auto itemIt = _datItems.find(filename);
-        if (itemIt != _datItems.end())
-        {
-            auto itemPtr = dynamic_cast<T*>(itemIt->second.get());
-            if (itemPtr == nullptr)
-            {
+        auto itemIt = _cachedFiles.find(filename);
+        if (itemIt != _cachedFiles.end()) {
+            auto itemPtr = std::dynamic_pointer_cast<T>(itemIt->second);
+            if (!itemPtr) {
                 Logger::error("RESOURCE MANAGER") << "Requested file type does not match type in the cache: " << filename << endl;
             }
             return itemPtr;
         }
 
+        /*
+         * TODO load file from VFS and create it instance
         T* itemPtr = nullptr;
         _loadStreamForFile(filename, [this, &filename, &itemPtr](Dat::Stream&& stream) {
             auto item = std::make_unique<T>(std::move(stream));
@@ -151,89 +112,14 @@ namespace Falltergeist
             item->setFilename(filename);
             _datItems.emplace(filename, std::move(item));
         });
+         */
 
-        return itemPtr;
-    }
-
-    Frm::File* ResourceManager::frmFileType(const string& filename)
-    {
-        // TODO: Maybe get rid of all wrappers like this and call template function directly from outside.
-        return _datFileItem<Frm::File>(filename);
-    }
-
-    Pal::File* ResourceManager::palFileType(const string& filename)
-    {
-        return _datFileItem<Pal::File>(filename);
-    }
-
-    Lst::File* ResourceManager::lstFileType(const string& filename)
-    {
-        return _datFileItem<Lst::File>(filename);
-    }
-
-    Map::File* ResourceManager::mapFileType(const string& filename)
-    {
-        auto item = _datFileItem<Map::File>(filename);
-        if (item) {
-            item->init(&fetchProFileType);
-        }
-        return item;
-    }
-
-    Pro::File* ResourceManager::proFileType(const string& filename)
-    {
-        return _datFileItem<Pro::File>(filename);
-    }
-
-    Txt::CityFile* ResourceManager::cityTxt()
-    {
-        return _datFileItem<Txt::CityFile>("data/city.txt");
-    }
-
-    Txt::MapsFile* ResourceManager::mapsTxt()
-    {
-        return _datFileItem<Txt::MapsFile>("data/maps.txt");
-    }
-
-    Txt::WorldmapFile* ResourceManager::worldmapTxt()
-    {
-        return _datFileItem<Txt::WorldmapFile>("data/worldmap.txt");
-    }
-
-    Txt::EndDeathFile* ResourceManager::endDeathTxt()
-    {
-        return _datFileItem<Txt::EndDeathFile>("data/enddeath.txt");
-    }
-
-    Txt::EndGameFile* ResourceManager::endGameTxt()
-    {
-        return _datFileItem<Txt::EndGameFile>("data/endgame.txt");
-    }
-
-    Txt::GenRepFile* ResourceManager::genRepTxt()
-    {
-        return _datFileItem<Txt::GenRepFile>("data/genrep.txt");
-    }
-
-    Txt::HolodiskFile* ResourceManager::holodiskTxt()
-    {
-        return _datFileItem<Txt::HolodiskFile>("data/holodisk.txt");
-    }
-
-    Txt::KarmaVarFile* ResourceManager::karmaVarTxt()
-    {
-        return _datFileItem<Txt::KarmaVarFile>("data/karmavar.txt");
-    }
-
-    Txt::QuestsFile* ResourceManager::questsTxt()
-    {
-        return _datFileItem<Txt::QuestsFile>("data/quests.txt");
+        return nullptr;
     }
 
     Graphics::Texture* ResourceManager::texture(const string& filename)
     {
-        if (_textures.count(filename))
-        {
+        if (_textures.count(filename)) {
             return _textures.at(filename).get();
         }
 
@@ -241,12 +127,10 @@ namespace Falltergeist
 
         Graphics::Texture* texture = nullptr;
 
-        if (ext == ".png")
-        {
+        if (ext == ".png") {
             // @fixme: this section looks quite ugly. we should try to do something with it someday
             SDL_Surface* tempSurface = IMG_Load(string(CrossPlatform::findFalltergeistDataPath() + "/" +filename).c_str());
-            if (tempSurface == NULL)
-            {
+            if (tempSurface == NULL) {
                 throw Exception("ResourceManager::texture(name) - cannot load texture from file " + filename + ": " + IMG_GetError());
             }
 
@@ -258,26 +142,23 @@ namespace Falltergeist
             SDL_FreeSurface(tempSurface);
             SDL_FreeSurface(tempSurface2);
 
-        }
-        else if (ext == ".rix")
-        {
-            auto rix = std::dynamic_pointer_cast<Format::Rix::File>(get(filename));
+        } else if (ext == ".rix") {
+            auto rix = get<Format::Rix::File>(filename);
             if (!rix) {
                 return nullptr;
             }
             texture = new Graphics::Texture(rix->width(), rix->height());
             texture->loadFromRGBA(rix->rgba());
-        }
-        else if (ext == ".frm")
-        {
-            auto frm = frmFileType(filename);
-            if (!frm) return nullptr;
+        } else if (ext == ".frm") {
+            auto frm = get<Format::Frm::File>(filename);
+            if (!frm) {
+                return nullptr;
+            }
+            auto pal = get<Format::Pal::File>("color.pal");
             texture = new Graphics::Texture(frm->width(), frm->height());
-            texture->loadFromRGBA(frm->rgba(palFileType("color.pal")));
-            texture->setMask(frm->mask(palFileType("color.pal")));
-        }
-        else
-        {
+            texture->loadFromRGBA(frm->rgba(pal));
+            texture->setMask(frm->mask(pal));
+        } else {
             throw Exception("ResourceManager::surface() - unknown image type:" + filename);
         }
 
@@ -288,20 +169,16 @@ namespace Falltergeist
     Graphics::Font* ResourceManager::font(const string& filename)
     {
 
-        if (_fonts.count(filename))
-        {
+        if (_fonts.count(filename)) {
             return _fonts.at(filename).get();
         }
 
         std::string ext = filename.substr(filename.length() - 4);
         Graphics::Font* fontPtr = nullptr;
 
-        if (ext == ".aaf")
-        {
+        if (ext == ".aaf") {
             fontPtr = new Graphics::AAF(filename);
-        }
-        else if (ext == ".fon")
-        {
+        } else if (ext == ".fon") {
             fontPtr = new Graphics::FON(filename);
         }
         _fonts.emplace(filename, std::unique_ptr<Graphics::Font>(fontPtr));
@@ -311,8 +188,7 @@ namespace Falltergeist
 
     Graphics::Shader* ResourceManager::shader(const string& filename)
     {
-        if (_shaders.count(filename))
-        {
+        if (_shaders.count(filename)) {
             return _shaders.at(filename).get();
         }
 
@@ -323,12 +199,11 @@ namespace Falltergeist
     }
 
 
-    Pro::File* ResourceManager::proFileType(unsigned int PID)
+    std::shared_ptr<Format::Pro::File> ResourceManager::proFileType(unsigned int PID)
     {
         unsigned int typeId = PID >> 24;
         string listFile;
-        switch ((OBJECT_TYPE)typeId)
-        {
+        switch ((OBJECT_TYPE)typeId) {
             case OBJECT_TYPE::ITEM:
                 listFile += "proto/items/items.lst";
                 break;
@@ -352,12 +227,11 @@ namespace Falltergeist
                 return nullptr;
         }
 
-        auto lst = lstFileType(listFile);
+        auto lst = get<Format::Lst::File>(listFile);
 
         unsigned int index = 0x00000FFF & PID;
 
-        if (index > lst->strings()->size())
-        {
+        if (index > lst->strings()->size()) {
             Logger::error() << "ResourceManager::proFileType(unsigned int) - LST size < PID: " << PID << endl;
             return nullptr;
         }
@@ -367,43 +241,44 @@ namespace Falltergeist
         switch ((OBJECT_TYPE)typeId)
         {
             case OBJECT_TYPE::ITEM:
-                return proFileType("proto/items/" + protoName);
+                return get<Format::Pro::File>("proto/items/" + protoName);
             case OBJECT_TYPE::CRITTER:
-                return proFileType("proto/critters/" + protoName);
+                return get<Format::Pro::File>("proto/critters/" + protoName);
             case OBJECT_TYPE::SCENERY:
-                return proFileType("proto/scenery/" + protoName);
+                return get<Format::Pro::File>("proto/scenery/" + protoName);
             case OBJECT_TYPE::WALL:
-                return proFileType("proto/walls/" + protoName);
+                return get<Format::Pro::File>("proto/walls/" + protoName);
             case OBJECT_TYPE::TILE:
-                return proFileType("proto/tiles/" + protoName);
+                return get<Format::Pro::File>("proto/tiles/" + protoName);
             case OBJECT_TYPE::MISC:
-                return proFileType("proto/misc/" + protoName);
+                return get<Format::Pro::File>("proto/misc/" + protoName);
         }
         return nullptr;
     }
 
     void ResourceManager::unloadResources()
     {
-        _datItems.clear();
+        _cachedFiles.clear();
     }
 
-    Frm::File* ResourceManager::frmFileType(unsigned int FID)
+    std::shared_ptr<Format::Frm::File> ResourceManager::frmFileType(unsigned int FID)
     {
         const auto& frmName = FIDtoFrmName(FID);
 
-        if (frmName.empty()) return nullptr;
-        return frmFileType(frmName);
+        if (frmName.empty()) {
+            return nullptr;
+        }
+        return get<Format::Frm::File>(frmName);
     }
 
-    std::shared_ptr<Format::BaseFormatFile> ResourceManager::intFileType(unsigned int SID)
+    std::shared_ptr<Format::Int::File> ResourceManager::intFileType(unsigned int SID)
     {
-        auto lst = lstFileType("scripts/scripts.lst");
-        if (SID >= lst->strings()->size())
-        {
+        auto lst = get<Format::Lst::File>("scripts/scripts.lst");
+        if (SID >= lst->strings()->size()) {
             throw Exception("ResourceManager::intFileType() - wrong SID: " + std::to_string(SID));
         }
 
-        return get("scripts/" + lst->strings()->at(SID));
+        return get<Format::Int::File>("scripts/" + lst->strings()->at(SID));
     }
 
     string ResourceManager::FIDtoFrmName(unsigned int FID)
@@ -415,8 +290,7 @@ namespace Falltergeist
             throw Exception("use CritterAnimationHelpers instead");
         }
 
-        if (type == FRM_TYPE::MISC && baseId == 1)
-        {
+        if (type == FRM_TYPE::MISC && baseId == 1) {
             static const std::string SCROLL_BLOCKERS_PATH("art/misc/scrblk.frm");
             // Map scroll blockers
             return SCROLL_BLOCKERS_PATH;
@@ -443,9 +317,8 @@ namespace Falltergeist
         }
 
         const auto& typeArtDescription = frmTypeDescription[static_cast<size_t>(type)];
-        auto lst = lstFileType(typeArtDescription.lstFilePath);
-        if (baseId >= lst->strings()->size())
-        {
+        auto lst = get<Format::Lst::File>(typeArtDescription.lstFilePath);
+        if (baseId >= lst->strings()->size()) {
             Logger::error() << "ResourceManager::FIDtoFrmName(unsigned int) - LST size " << lst->strings()->size() << " <= frmID: " << baseId << " frmType: " << (unsigned)type << endl;
             return std::string();
         }

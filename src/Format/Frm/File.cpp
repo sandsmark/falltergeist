@@ -137,7 +137,7 @@ namespace Falltergeist
                 return height;
             }
 
-            uint32_t* File::rgba(Pal::File* palFile)
+            uint32_t* File::rgba(std::shared_ptr<Pal::File> palFile)
             {
                 // TODO: this looks like a getter, which in fact creates _rgba.
                 // Moreover, the content of _rgba depends on the specific palFile that was provided the first time
@@ -167,7 +167,7 @@ namespace Falltergeist
                 return _rgba.data();
             }
 
-            std::vector<bool>& File::mask(Pal::File* palFile)
+            std::vector<bool>& File::mask(std::shared_ptr<Pal::File> palFile)
             {
                 if (!_mask.empty()) {
                     return _mask;

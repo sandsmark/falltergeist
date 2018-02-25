@@ -273,7 +273,7 @@ namespace Falltergeist
 
         void Location::loadAmbient(const std::string &name)
         {
-            auto maps = ResourceManager::getInstance()->mapsTxt()->maps();
+            auto maps = ResourceManager::get<Format::Txt::MapsFile>("data/maps.txt")->maps();
             auto mapShortName = path_basename(name, true);
             auto it = find_if(maps.begin(), maps.end(), [&](const Format::Txt::Map &map) {
                 return map.name == mapShortName;
@@ -976,7 +976,7 @@ namespace Falltergeist
                                 return;
                             }
 
-                            auto mapsFile = ResourceManager::getInstance()->mapsTxt();
+                            auto mapsFile = ResourceManager::get<Format::Txt::MapsFile>("data/maps.txt");
                             std::string mapName = mapsFile->maps().at(exitGrid->exitMapNumber()).name;
 
                             GameLocationHelper gameLocationHelper;

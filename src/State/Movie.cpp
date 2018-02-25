@@ -27,7 +27,6 @@
 #include "../CrossPlatform.h"
 #include "../Event/Keyboard.h"
 #include "../Event/Mouse.h"
-#include "../Format/Dat/MiscFile.h"
 #include "../Format/Lst/File.h"
 #include "../Format/Sve/File.h"
 #include "../Game/Game.h"
@@ -67,16 +66,16 @@ namespace Falltergeist
             auto renderer = Game::getInstance()->renderer();
             setPosition((renderer->size() - Point(640, 320)) / 2);
 
-            auto lst = ResourceManager::getInstance()->lstFileType("data/movies.lst");
+            auto lst = ResourceManager::get<Format::Lst::File>("data/movies.lst");
             std::string movie = "art/cuts/" + lst->strings()->at(_id);
 
-            auto cfglst = ResourceManager::getInstance()->lstFileType("data/moviecfgs.lst");
+            auto cfglst = ResourceManager::get<Format::Lst::File>("data/moviecfgs.lst");
             std::string moviecfgfile = "art/cuts/" + cfglst->strings()->at(_id);
             _effects.push_back({0,1, 0, 0, 0, 1});
 
-            if (cfglst->strings()->at(_id)!="reserved.cfg")
+            if (cfglst->strings()->at(_id) != "reserved.cfg")
             {
-                auto moviecfg = ResourceManager::get(moviecfgfile);
+                auto moviecfg = ResourceManager::get<Format::BaseFormatFile>(moviecfgfile);
                 //parse ini
                 std::istringstream str = moviecfg->getStream();
                 auto inifile = new Ini::Parser(str);
@@ -101,16 +100,16 @@ namespace Falltergeist
                 _effects.push_back({1,-1, 0, 0, 0, 1});
             }
 
-            auto sublst = ResourceManager::getInstance()->lstFileType("data/subtitles.lst");
+            auto sublst = ResourceManager::get<Format::Lst::File>("data/subtitles.lst");
             std::string subfile = "text/english/cuts/" + sublst->strings()->at(_id);
 
             if (sublst->strings()->at(_id) != "reserved.sve") {
-                _subs = ResourceManager::get(subfile);
+                _subs = ResourceManager::get<Format::Sve::File>(subfile);
                 if (_subs) {
                     _hasSubs = true;
                 }
             }
-            addUI("movie", new UI::MvePlayer(std::dynamic_pointer_cast<Format::Mve::File>(ResourceManager::get(movie))));
+            addUI("movie", new UI::MvePlayer(ResourceManager::get<Format::Mve::File>(movie)));
 
             auto font0_ffffffff = ResourceManager::getInstance()->font("font1.aaf");
             auto subLabel = new UI::TextArea("", 0, 320+35);

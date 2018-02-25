@@ -45,7 +45,6 @@
 #include "../State/Location.h"
 #include "../UI/FpsCounter.h"
 #include "../UI/TextArea.h"
-#include "../VFS/VFS.h"
 
 // Third patry includes
 #include <SDL_image.h>
@@ -79,7 +78,6 @@ namespace Falltergeist
 
             _settings = std::move(settings);
 
-            _vfs = std::make_unique<VFS::VFS>();
             _eventDispatcher = std::make_unique<Event::Dispatcher>();
 
             _renderer = std::make_unique<Graphics::Renderer>(_settings->screenWidth(), _settings->screenHeight());
@@ -243,7 +241,7 @@ namespace Falltergeist
             if (!_GVARS.empty()) {
                 return;
             }
-            auto gam = std::dynamic_pointer_cast<Format::Gam::File>(ResourceManager::get("data/vault13.gam"));
+            auto gam = ResourceManager::get<Format::Gam::File>("data/vault13.gam");
             for (auto gvar : *gam->GVARS()) {
                 _GVARS.push_back(gvar.second);
             }

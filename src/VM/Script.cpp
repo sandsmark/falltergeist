@@ -129,9 +129,9 @@ namespace Falltergeist
 
         std::string Script::msgMessage(int msg_file_num, int msg_num)
         {
-            auto lst = ResourceManager::getInstance()->lstFileType("scripts/scripts.lst");
+            auto lst = ResourceManager::get<Format::Lst::File>("scripts/scripts.lst");
             auto scriptName = lst->strings()->at(msg_file_num - 1);
-            auto msg = std::dynamic_pointer_cast<Format::Msg::File>(ResourceManager::get("text/english/dialog/" + scriptName.substr(0, scriptName.find(".int")).append(".msg")));
+            auto msg = ResourceManager::get<Format::Msg::File>("text/english/dialog/" + scriptName.substr(0, scriptName.find(".int")).append(".msg"));
             if (!msg) {
                 Logger::debug("SCRIPT") << "Script::msgMessage(file, num) not found. file: " + std::to_string(msg_file_num) + " num: " + std::to_string(msg_num) << std::endl;
                 return "";
@@ -141,9 +141,9 @@ namespace Falltergeist
 
         std::string Script::msgSpeech(int msg_file_num, int msg_num)
         {
-            auto lst = ResourceManager::getInstance()->lstFileType("scripts/scripts.lst");
+            auto lst = ResourceManager::get<Format::Lst::File>("scripts/scripts.lst");
             auto scriptName = lst->strings()->at(msg_file_num - 1);
-            auto msg = std::dynamic_pointer_cast<Format::Msg::File>(ResourceManager::get("text/english/dialog/" + scriptName.substr(0, scriptName.find(".int")).append(".msg")));
+            auto msg = ResourceManager::get<Format::Msg::File>("text/english/dialog/" + scriptName.substr(0, scriptName.find(".int")).append(".msg"));
             if (!msg) {
                 Logger::debug("SCRIPT") << "Script::msgSpeech(file, num) not found. file: " + std::to_string(msg_file_num) + " num: " + std::to_string(msg_num) << std::endl;
                 return "";

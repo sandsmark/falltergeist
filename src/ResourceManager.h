@@ -40,39 +40,12 @@ namespace Falltergeist
 {
     namespace Format
     {
-        namespace Dat
-        {
-            class File;
-            class Item;
-            class MiscFile;
-            class Stream;
-        }
         namespace Frm { class File; }
-        namespace Pal { class File; }
-        namespace Lst { class File; }
+        namespace Int { class File; }
         namespace Pro { class File; }
         namespace Txt
         {
-            class CityFile;
             class MapsFile;
-            class WorldmapFile;
-
-            template <typename T>
-            class CSVBasedFile;
-
-            struct EndDeath;
-            struct EndGame;
-            struct GenRep;
-            struct Holodisk;
-            struct KarmaVar;
-            struct Quest;
-
-            typedef CSVBasedFile<EndDeath> EndDeathFile;
-            typedef CSVBasedFile<EndGame> EndGameFile;
-            typedef CSVBasedFile<GenRep> GenRepFile;
-            typedef CSVBasedFile<Holodisk> HolodiskFile;
-            typedef CSVBasedFile<KarmaVar> KarmaVarFile;
-            typedef CSVBasedFile<Quest> QuestsFile;
         }
         class BaseFormatFile;
     }
@@ -96,40 +69,24 @@ namespace Falltergeist
         public:
             static ResourceManager* getInstance();
 
-            static std::shared_ptr<Format::BaseFormatFile> get(const std::string& filename);
-
-            Format::Dat::Item* datFileItem(const std::string& filename);
-            Format::Frm::File* frmFileType(const std::string& filename);
-            Format::Frm::File* frmFileType(unsigned int FID);
-            Format::Pal::File* palFileType(const std::string& filename);
-            std::shared_ptr<Format::BaseFormatFile> intFileType(unsigned int SID);
-            Format::Lst::File* lstFileType(const std::string& filename);
-            Format::Pro::File* proFileType(const std::string& filename);
-            Format::Pro::File* proFileType(unsigned int PID);
-
-            Format::Txt::CityFile* cityTxt();
-            Format::Txt::MapsFile* mapsTxt();
-            Format::Txt::WorldmapFile* worldmapTxt();
-            Format::Txt::EndDeathFile* endDeathTxt();
-            Format::Txt::EndGameFile* endGameTxt();
-            Format::Txt::GenRepFile* genRepTxt();
-            Format::Txt::HolodiskFile* holodiskTxt();
-            Format::Txt::KarmaVarFile* karmaVarTxt();
-            Format::Txt::QuestsFile* questsTxt();
+            std::shared_ptr<Format::Frm::File> frmFileType(unsigned int FID);
+            std::shared_ptr<Format::Int::File> intFileType(unsigned int SID);
+            std::shared_ptr<Format::Pro::File> proFileType(unsigned int PID);
 
             Graphics::Texture* texture(const std::string& filename);
             Graphics::Font* font(const std::string& filename = "font1.aaf");
             Graphics::Shader* shader(const std::string& filename);
             void unloadResources();
             std::string FIDtoFrmName(unsigned int FID);
-            Game::Location* gameLocation(unsigned int number);
             void shutdown();
+
+            template <class T>
+            static std::shared_ptr<T> get(const std::string& filename);
 
         protected:
             friend class Base::Singleton<ResourceManager>;
 
-            std::vector<std::unique_ptr<Format::Dat::File>> _datFiles;
-            std::unordered_map<std::string, std::unique_ptr<Format::Dat::Item>> _datItems;
+            static std::unordered_map<std::string, std::shared_ptr<Format::BaseFormatFile>> _cachedFiles;
             std::unordered_map<std::string, std::unique_ptr<Graphics::Texture>> _textures;
             std::unordered_map<std::string, std::unique_ptr<Graphics::Font>> _fonts;
             std::unordered_map<std::string, std::unique_ptr<Graphics::Shader>> _shaders;
@@ -137,14 +94,6 @@ namespace Falltergeist
             ResourceManager();
             ResourceManager(const ResourceManager&) = delete;
             ResourceManager& operator=(const ResourceManager&) = delete;
-
-            // Retrieves given file item from "virtual file system".
-            // All items are cached after being requested for the first time.
-            template <class T>
-            T* _datFileItem(std::string filename);
-
-            // Searches for a given file within virtual "file system" and calls the given callback with Dat::Stream created from that file.
-            void _loadStreamForFile(std::string filename, std::function<void(Format::Dat::Stream&&)> callback);
     };
 }
 

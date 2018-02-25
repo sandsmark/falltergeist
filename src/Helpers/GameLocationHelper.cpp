@@ -20,6 +20,7 @@
 // C++ standard includes
 
 // Falltergeist includes
+#include "../Format/Map/File.h"
 #include "../Game/Game.h"
 #include "../Game/Location.h"
 #include "../Helpers/GameLocationHelper.h"
@@ -48,7 +49,7 @@ namespace Falltergeist
         std::shared_ptr<Game::Location> GameLocationHelper::getByName(const std::string& name) const
         {
             std::string mapFileName = "maps/" + name + ".map";
-            auto mapFile = std::dynamic_pointer_cast<Format::Map::File>(ResourceManager::get(mapFileName));
+            auto mapFile = ResourceManager::get<Format::Map::File>(mapFileName);
             if (mapFile == nullptr) {
                 return nullptr;
             }

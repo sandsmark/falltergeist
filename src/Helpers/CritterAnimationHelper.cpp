@@ -36,7 +36,7 @@ namespace Falltergeist
         std::string CritterAnimationHelper::getPrefix(unsigned int FID) const
         {
             const auto baseId = FID & 0x00000FFF;
-            auto lst = ResourceManager::getInstance()->lstFileType("art/critters/critters.lst");
+            auto lst = ResourceManager::get<Format::Lst::File>("art/critters/critters.lst");
             if (baseId >= lst->strings()->size()) {
                 Logger::error() << "CritterAnimationHelper::getPrefix - LST size: " << lst->strings()->size() << " <= baseId: " << baseId << " frmType: " << std::endl;
                 return "";

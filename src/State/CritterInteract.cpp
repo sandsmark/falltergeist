@@ -112,13 +112,13 @@ namespace Falltergeist
 
             if (backgroundID() >= 0 && headID() >= 0)
             {
-                auto lst = ResourceManager::getInstance()->lstFileType("art/backgrnd/backgrnd.lst");
+                auto lst = ResourceManager::get<Format::Lst::File>("art/backgrnd/backgrnd.lst");
                 std::string bgImage = "art/backgrnd/" + lst->strings()->at(backgroundID());
                 auto bg = new UI::Image(bgImage);
                 bg->setPosition({128, 15});
                 addUI(bg);
 
-                auto headlst = ResourceManager::getInstance()->lstFileType("art/heads/heads.lst");
+                auto headlst = ResourceManager::get<Format::Lst::File>("art/heads/heads.lst");
                 std::string headImage = headlst->strings()->at(headID());
 
                 auto fidgets = headImage.substr(headImage.find(",") + 1);
@@ -249,7 +249,7 @@ namespace Falltergeist
             _nextIndex = 0;
             _phase = Phase::TALK;
 
-            _lips = ResourceManager::get("sound/speech/" + _headName+"/" + speech + ".lip");
+            _lips = ResourceManager::get<Format::Lip::File>("sound/speech/" + _headName+"/" + speech + ".lip");
             auto head = dynamic_cast<UI::AnimationQueue*>(getUI("head"));
             head->stop();
             head->clear();

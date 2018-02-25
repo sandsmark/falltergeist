@@ -51,7 +51,7 @@ class Image : public Base
 {
 public:
     Image(const std::string& filename);
-    Image(Format::Frm::File* frm, unsigned int direction);
+    Image(std::shared_ptr<Format::Frm::File> frm, unsigned int direction);
 
     ~Image() override;
     virtual void render(bool eggTransparency = false) override;

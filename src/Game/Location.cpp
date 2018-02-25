@@ -25,6 +25,7 @@
 
 // Falltergeist includes
 #include "../Format/Gam/File.h"
+#include "../Format/Int/File.h"
 #include "../Format/Map/File.h"
 #include "../Game/LocationElevation.h"
 #include "../Game/SpatialObject.h"
@@ -61,7 +62,7 @@ namespace Falltergeist
 
             // Initialize MAP vars
             if (!mapFile->MVARS().empty()) {
-                auto gam = std::dynamic_pointer_cast<Format::Gam::File>(ResourceManager::get("maps/" + name() + ".gam"));
+                auto gam = ResourceManager::get<Format::Gam::File>("maps/" + name() + ".gam");
                 if (gam) {
                     for (auto mvar : *gam->MVARS()) {
                         _MVARS.push_back(mvar.second);
@@ -70,8 +71,9 @@ namespace Falltergeist
             }
 
             if (mapFile->scriptId() > 0) {
+                std::shared_ptr<Format::Int::File> intFile = ResourceManager::getInstance()->intFileType((unsigned)mapFile->scriptId() - 1);
                 _script = std::make_shared<VM::Script>(
-                    ResourceManager::getInstance()->intFileType((unsigned)mapFile->scriptId() - 1),
+                    intFile,
                     nullptr
                 );
             }

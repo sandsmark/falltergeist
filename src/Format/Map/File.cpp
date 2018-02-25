@@ -26,6 +26,7 @@
 #include <algorithm>
 
 // Falltergeist includes
+#include "../../ResourceManager.h"
 #include "../../Exception.h"
 #include "../Enums.h"
 #include "../Map/File.h"
@@ -44,9 +45,10 @@ namespace Falltergeist
         {
             File::File(ttvfs::CountedPtr<ttvfs::File> file) : BaseFormatFile(file)
             {
+                init();
             }
 
-            void File::init(ProFileTypeLoaderCallback callback)
+            void File::init()
             {
                 if (_initialized) {
                     return;
@@ -184,11 +186,11 @@ namespace Falltergeist
                 for (auto& elev : _elevations) {
                     auto objectsOnElevation = uint32();
                     for (size_t j = 0; j != objectsOnElevation; ++j) {
-                        auto object = _readObject(callback);
+                        auto object = _readObject();
                         if (object->inventorySize() > 0) {
                             for (size_t i = 0; i < object->inventorySize(); ++i) {
                                 uint32_t amount = uint32();
-                                auto subobject = _readObject(callback);
+                                auto subobject = _readObject();
                                 subobject->setAmmount(amount);
                                 object->children().emplace_back(std::move(subobject));
                             }
@@ -198,7 +200,7 @@ namespace Falltergeist
                 }
             }
 
-            std::unique_ptr<Object> File::_readObject(ProFileTypeLoaderCallback callback)
+            std::unique_ptr<Object> File::_readObject()
             {
                 auto object = std::make_unique<Object>();
                 object->setOID(uint32());
@@ -243,9 +245,10 @@ namespace Falltergeist
                 object->setUnknown13(uint32());
 
                 switch ((OBJECT_TYPE)object->objectTypeId()) {
-                    case OBJECT_TYPE::ITEM:
-                        object->setObjectSubtypeId(callback(PID)->subtypeId());
-                        switch((ITEM_TYPE)object->objectSubtypeId()) {
+                    case OBJECT_TYPE::ITEM: {
+                        auto pro = ResourceManager::getInstance()->proFileType(PID);
+                        object->setObjectSubtypeId(pro->subtypeId());
+                        switch ((ITEM_TYPE) object->objectSubtypeId()) {
                             case ITEM_TYPE::AMMO:
                                 object->setAmmo(uint32()); // bullets
                                 break;
@@ -269,6 +272,7 @@ namespace Falltergeist
                                 throw Exception("File::_readObject() - unknown item type");
                         }
                         break;
+                    }
                     case OBJECT_TYPE::CRITTER:
                         uint32(); //reaction to player - saves only
                         uint32(); //current mp - saves only
@@ -286,13 +290,13 @@ namespace Falltergeist
                         object->setFrmTypeId((FID & 0x0F000000) >> 24);
                         object->setObjectID3((FID & 0xF0000000) >> 28);
                         break;
-                    case OBJECT_TYPE::SCENERY:
-                        object->setObjectSubtypeId(callback(PID)->subtypeId());
+                    case OBJECT_TYPE::SCENERY: {
+                        auto pro = ResourceManager::getInstance()->proFileType(PID);
+                        object->setObjectSubtypeId(pro->subtypeId());
                         uint32_t elevhex;  // elev+hex
                         uint32_t hex;
                         uint32_t elev;
-                        switch((SCENERY_TYPE)object->objectSubtypeId())
-                        {
+                        switch ((SCENERY_TYPE) object->objectSubtypeId()) {
                             case SCENERY_TYPE::LADDER_TOP:
                             case SCENERY_TYPE::LADDER_BOTTOM:
                             case SCENERY_TYPE::STAIRS:
@@ -316,6 +320,7 @@ namespace Falltergeist
                                 throw Exception("File::_readObject() - unknown scenery type");
                         }
                         break;
+                    }
                     case OBJECT_TYPE::WALL:
                         break;
                     case OBJECT_TYPE::TILE:

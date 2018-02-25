@@ -132,7 +132,7 @@ void TileMap::init()
     _atlases = (uint32_t)std::ceil((float)numbers.size() / (float)_tilesPerAtlas);
     Logger::info("GAME") << "Tilemap atlases " << _atlases << std::endl;
 
-    auto tilesLst = ResourceManager::getInstance()->lstFileType("art/tiles/tiles.lst");
+    auto tilesLst = ResourceManager::get<Format::Lst::File>("art/tiles/tiles.lst");
 
     for (uint8_t i = 0; i < _atlases; i++)
     {
@@ -140,9 +140,9 @@ void TileMap::init()
         SDL_SetSurfaceBlendMode(tmp, SDL_BLENDMODE_NONE);
         for (unsigned int j = _tilesPerAtlas*i; j < std::min((uint32_t)numbers.size(), (uint32_t)_tilesPerAtlas*(i + 1)); ++j)
         {
-            auto frm = ResourceManager::getInstance()->frmFileType("art/tiles/" + tilesLst->strings()->at(numbers.at(j)));
-
-            SDL_Surface* tileSurf = SDL_CreateRGBSurfaceFrom(frm->rgba(ResourceManager::getInstance()->palFileType("color.pal")), 82, 38, 32, 82 * 4, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
+            auto frm = ResourceManager::get<Format::Frm::File>("art/tiles/" + tilesLst->strings()->at(numbers.at(j)));
+            auto pal = ResourceManager::get<Format::Pal::File>("color.pal");
+            SDL_Surface* tileSurf = SDL_CreateRGBSurfaceFrom(frm->rgba(pal), 82, 38, 32, 82 * 4, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
             SDL_SetSurfaceBlendMode(tileSurf, SDL_BLENDMODE_NONE);
             int x = (j % maxW) * 80;
             int y = (j / maxW) * 36;
@@ -248,15 +248,16 @@ bool TileMap::opaque(const Point &pos)
 {
     auto camera = Game::getInstance()->locationState()->camera();
 
-    auto tilesLst = ResourceManager::getInstance()->lstFileType("art/tiles/tiles.lst");
+    auto tilesLst = ResourceManager::get<Format::Lst::File>("art/tiles/tiles.lst");
     for (auto& it : _tiles)
     {
         auto& tile = it.second;
         const Size tileSize = Size(80, 36);
         if (tile->enabled() && Rect::inRect(pos + camera->topLeft(), tile->position(), tileSize))
         {
-            auto frm = ResourceManager::getInstance()->frmFileType("art/tiles/" + tilesLst->strings()->at(tile->number()));
-            auto& mask = frm->mask(ResourceManager::getInstance()->palFileType("color.pal"));
+            auto pal = ResourceManager::get<Format::Pal::File>("color.pal");
+            auto frm = ResourceManager::get<Format::Frm::File>("art/tiles/" + tilesLst->strings()->at(tile->number()));
+            auto& mask = frm->mask(pal);
             auto position = pos - tile->position() + camera->topLeft() + Point(1, 1);
 
             if ((position.y() * 82 + position.x()) > 0 && ((unsigned)(position.y() * 82 + position.x()) < mask.size()))

@@ -49,15 +49,13 @@ namespace Falltergeist
         {
             class Object;
 
-            typedef Pro::File* (*ProFileTypeLoaderCallback)(uint32_t);
-
             class File : public BaseFormatFile
             {
                 public:
                     explicit File(ttvfs::CountedPtr<ttvfs::File> file);
 
                     // TODO: get rid of two-step initialization
-                    void init(ProFileTypeLoaderCallback callback);
+                    void init();
 
                     const std::vector<Elevation>& elevations() const;
                     const std::vector<Script>& scripts() const;
@@ -100,7 +98,7 @@ namespace Falltergeist
 
                     std::string _name;
 
-                    std::unique_ptr<Object> _readObject(ProFileTypeLoaderCallback callback);
+                    std::unique_ptr<Object> _readObject();
             };
         }
     }

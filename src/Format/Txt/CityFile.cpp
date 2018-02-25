@@ -24,7 +24,7 @@
 
 // C++ standard includes
 #include <string>
-#include <strstream>
+#include <sstream>
 
 // Falltergeist includes
 #include "../../Format/Ini/File.h"

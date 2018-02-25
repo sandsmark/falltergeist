@@ -38,7 +38,7 @@ namespace Falltergeist
         AAF::AAF(const std::string& filename) : Font()
         {
             _filename = filename;
-            _aaf = ResourceManager::get(filename);
+            _aaf = ResourceManager::get<Format::Aaf::File>(filename);
 
             unsigned int width = (_aaf->maximumWidth()+2)*16u;
             unsigned int height = (_aaf->maximumHeight()+2)*16u;

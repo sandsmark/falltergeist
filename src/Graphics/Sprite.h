@@ -42,7 +42,7 @@ class Sprite
 
 public:
     Sprite(const std::string& filename);
-    Sprite(Format::Frm::File* frm);
+    Sprite(std::shared_ptr<Format::Frm::File> frm);
     void renderScaled(int x, int y, unsigned int width, unsigned int height, bool transparency = false,
                       bool light = false, int outline = 0, unsigned int lightValue=0);
     void render(int x, int y, bool transparency = false, bool light = false, int outline = 0, unsigned int lightValue=0);

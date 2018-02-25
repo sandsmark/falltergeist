@@ -56,8 +56,8 @@ Animation::Animation() : Falltergeist::UI::Base()
 Animation::Animation(const std::string& frmName, unsigned int direction) : Falltergeist::UI::Base()
 {
     _direction = direction;
-    auto frm = ResourceManager::getInstance()->frmFileType(frmName);
-    if (frm == nullptr) {
+    auto frm = ResourceManager::get<Format::Frm::File>(frmName);
+    if (!frm) {
         return;
     }
 

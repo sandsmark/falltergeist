@@ -29,7 +29,6 @@
 #include "../Event/Mouse.h"
 #include "../Event/State.h"
 #include "../Font.h"
-#include "../Format/Dat/MiscFile.h"
 #include "../Game/Game.h"
 #include "../Graphics/Renderer.h"
 #include "../Input/Mouse.h"
@@ -64,7 +63,7 @@ namespace Falltergeist
             auto renderer = Game::getInstance()->renderer();
             setPosition(Point((renderer->size().width() - 640) / 2, renderer->size().height()));
 
-            auto credits = ResourceManager::get("text/english/credits.txt");
+            auto credits = ResourceManager::get<Format::BaseFormatFile>("text/english/credits.txt");
             std::istringstream ss = credits->getStream();
             std::string line;
 

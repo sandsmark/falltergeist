@@ -27,6 +27,7 @@
 
 // C++ standard includes
 #include <map>
+#include <memory>
 #include <vector>
 
 // Falltergeist includes
@@ -65,8 +66,8 @@ namespace Falltergeist
                     int16_t offsetX(unsigned int direction = 0, unsigned int frame = 0) const;
                     int16_t offsetY(unsigned int direction = 0, unsigned int frame = 0) const;
 
-                    uint32_t* rgba(Pal::File* palFile);
-                    std::vector<bool>& mask(Pal::File* palFile);
+                    uint32_t* rgba(std::shared_ptr<Pal::File> palFile);
+                    std::vector<bool>& mask(std::shared_ptr<Pal::File> palFile);
 
                     const std::vector<Direction>& directions() const;
 

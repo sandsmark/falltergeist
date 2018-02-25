@@ -86,7 +86,7 @@ namespace Falltergeist
             if (game->settings()->forceLocation())
             {
                 auto player = std::make_unique<Game::DudeObject>();
-                auto combat = std::dynamic_pointer_cast<Format::Gcd::File>(ResourceManager::get("premade/combat.gcd"));
+                auto combat = ResourceManager::get<Format::Gcd::File>("premade/combat.gcd");
                 player->loadFromGCDFile(combat);
                 game->setPlayer(std::move(player));
 

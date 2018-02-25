@@ -60,7 +60,7 @@ Animation::Animation(const std::string &filename)
 
     _texture = ResourceManager::getInstance()->texture(filename);
 
-    Format::Frm::File* frm = ResourceManager::getInstance()->frmFileType(filename);
+    auto frm = ResourceManager::get<Format::Frm::File>(filename);
 
     _stride = frm->framesPerDirection();
 

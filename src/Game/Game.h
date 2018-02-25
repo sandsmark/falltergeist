@@ -67,10 +67,6 @@ namespace Falltergeist
         class FpsCounter;
         class TextArea;
     }
-    namespace VFS
-    {
-        class VFS;
-    }
 
     class Exception;
     class ResourceManager;
@@ -139,7 +135,6 @@ namespace Falltergeist
 
                 unsigned int _frame = 0;
 
-                std::unique_ptr<VFS::VFS> _vfs;
                 std::unique_ptr<Graphics::Renderer> _renderer;
                 std::unique_ptr<Audio::Mixer> _mixer;
                 std::unique_ptr<Input::Mouse> _mouse;

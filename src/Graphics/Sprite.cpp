@@ -65,7 +65,7 @@ Sprite::Sprite(const std::string& fname)
     _attribTex = _shader->getAttrib("TexCoord");
 }
 
-Sprite::Sprite(Format::Frm::File *frm) : Sprite(frm->filename())
+Sprite::Sprite(std::shared_ptr<Format::Frm::File> frm) : Sprite(frm->filename())
 {
 }
 
