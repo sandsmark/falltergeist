@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
     ttvfs::Root root;
 
     root.AddLoader(new ttvfs::DiskLoader);
-    root.AddArchiveLoader(new ttvfs::VFSDat2ArchiveLoader);
+    root.AddArchiveLoader(new ttvfs::Dat2ArchiveLoader);
     root.AddArchive("/media/alexeevdv/FALLOUT2/master.dat");
     root.Mount("/media/alexeevdv/FALLOUT2/master.dat", "");
 
