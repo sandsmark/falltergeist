@@ -48,7 +48,7 @@ namespace Falltergeist
         std::shared_ptr<Game::Location> GameLocationHelper::getByName(const std::string& name) const
         {
             std::string mapFileName = "maps/" + name + ".map";
-            auto mapFile = ResourceManager::getInstance()->mapFileType(mapFileName);
+            auto mapFile = std::dynamic_pointer_cast<Format::Map::File>(ResourceManager::get(mapFileName));
             if (mapFile == nullptr) {
                 return nullptr;
             }

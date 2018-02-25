@@ -131,7 +131,7 @@ namespace Falltergeist
                     ((ItemObject*)object)->setWeight(proto->weight());
                     // @TODO: ((GameItemObject*)object)->setVolume(proto->containerSize());
                     ((ItemObject*)object)->setInventoryFID(proto->inventoryFID());
-                    auto msg = ResourceManager::getInstance()->msgFileType("text/english/game/pro_item.msg");
+                    auto msg = std::dynamic_pointer_cast<Format::Msg::File>(ResourceManager::get("text/english/game/pro_item.msg"));
                     try
                     {
                         object->setName(msg->message(proto->messageId())->text());
@@ -143,7 +143,7 @@ namespace Falltergeist
                 case OBJECT_TYPE::CRITTER:
                 {
                     object = new CritterObject();
-                    auto msg = ResourceManager::getInstance()->msgFileType("text/english/game/pro_crit.msg");
+                    auto msg = std::dynamic_pointer_cast<Format::Msg::File>(ResourceManager::get("text/english/game/pro_crit.msg"));
                     try
                     {
                         object->setName(msg->message(proto->messageId())->text());
@@ -209,7 +209,7 @@ namespace Falltergeist
                             break;
                         }
                     }
-                    auto msg = ResourceManager::getInstance()->msgFileType("text/english/game/pro_scen.msg");
+                    auto msg = std::dynamic_pointer_cast<Format::Msg::File>(ResourceManager::get("text/english/game/pro_scen.msg"));
                     try
                     {
                         object->setName(msg->message(proto->messageId())->text());
@@ -247,7 +247,7 @@ namespace Falltergeist
                 case OBJECT_TYPE::WALL:
                 {
                     object = new WallObject();
-                    auto msg = ResourceManager::getInstance()->msgFileType("text/english/game/pro_wall.msg");
+                    auto msg = std::dynamic_pointer_cast<Format::Msg::File>(ResourceManager::get("text/english/game/pro_wall.msg"));
                     try
                     {
                         object->setName(msg->message(proto->messageId())->text());
@@ -304,7 +304,7 @@ namespace Falltergeist
                             break;
                     }
 
-                    auto msg = ResourceManager::getInstance()->msgFileType("text/english/game/pro_misc.msg");
+                    auto msg = std::dynamic_pointer_cast<Format::Msg::File>(ResourceManager::get("text/english/game/pro_misc.msg"));
                     try
                     {
                         object->setName(msg->message(proto->messageId())->text());
@@ -320,8 +320,10 @@ namespace Falltergeist
 
             if (proto->scriptId() > 0)
             {
-                auto intFile = ResourceManager::getInstance()->intFileType(proto->scriptId());
-                if (intFile) object->setScript(new VM::Script(intFile, object));
+                auto intFile = std::dynamic_pointer_cast<Format::Int::File>(ResourceManager::getInstance()->intFileType(proto->scriptId()));
+                if (intFile) {
+                    object->setScript(new VM::Script(intFile, object));
+                }
             }
 
             return object;

@@ -30,26 +30,24 @@
 
 namespace Falltergeist
 {
-namespace Graphics
-{
+    namespace Graphics
+    {
+        class FON : public Graphics::Font
+        {
+            public:
+                FON(const std::string& filename);
+                ~FON();
 
-class FON : public Graphics::Font
-{
-public:
-    FON(const std::string& filename);
-    ~FON();
+                virtual unsigned short horizontalGap() override;
+                virtual unsigned short verticalGap() override;
+                virtual unsigned short spaceWidth() override;
+                virtual unsigned short width() override;
+                virtual unsigned short height() override;
+                virtual unsigned short glyphWidth(uint8_t ch) override;
 
-    virtual unsigned short horizontalGap() override;
-    virtual unsigned short verticalGap() override;
-    virtual unsigned short spaceWidth() override;
-    virtual unsigned short width() override;
-    virtual unsigned short height() override;
-    virtual unsigned short glyphWidth(uint8_t ch) override;
-
-private:
-    Format::Fon::File* _fon = nullptr;
-};
-
-}
+            private:
+                std::shared_ptr<Format::Fon::File> _fon;
+        };
+    }
 }
 #endif //FALLTERGEIST_GRAPHICS_FONT_FON_H

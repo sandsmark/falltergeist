@@ -30,28 +30,24 @@
 
 namespace Falltergeist
 {
-namespace Graphics
-{
+    namespace Graphics
+    {
+        class AAF : public Graphics::Font
+        {
+            public:
+                AAF(const std::string& filename);
+                ~AAF();
 
-class AAF : public Graphics::Font
-{
+                virtual unsigned short horizontalGap() override;
+                virtual unsigned short verticalGap() override;
+                virtual unsigned short spaceWidth() override;
+                virtual unsigned short width() override;
+                virtual unsigned short height() override;
+                virtual unsigned short glyphWidth(uint8_t ch) override;
 
-public:
-    AAF(const std::string& filename);
-    ~AAF();
-
-    virtual unsigned short horizontalGap() override;
-    virtual unsigned short verticalGap() override;
-    virtual unsigned short spaceWidth() override;
-    virtual unsigned short width() override;
-    virtual unsigned short height() override;
-    virtual unsigned short glyphWidth(uint8_t ch) override;
-
-
-private:
-    Format::Aaf::File* _aaf = nullptr;
-};
-
-}
+            private:
+                std::shared_ptr<Format::Aaf::File> _aaf;
+        };
+    }
 }
 #endif //FALLTERGEIST_GRAPHICS_FONT_AAF_H

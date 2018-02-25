@@ -33,146 +33,119 @@
 #include "Base/Singleton.h"
 
 // Third party includes
+#include <ttvfs.h>
+#include <ttvfs_dat2.h>
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Aaf { class File; }
-namespace Fon { class File; }
-namespace Acm { class File; }
-namespace Bio { class File; }
-namespace Dat
-{
-class File;
-class Item;
-class MiscFile;
-class Stream;
-}
-namespace Frm { class File; }
-namespace Fon { class File; }
-namespace Gam { class File; }
-namespace Gcd { class File; }
-namespace Pal { class File; }
-namespace Int { class File; }
-namespace Lip { class File; }
-namespace Lst { class File; }
-namespace Map { class File; }
-namespace Msg { class File; }
-namespace Mve { class File; }
-namespace Pro { class File; }
-namespace Pro { class File; }
-namespace Rix { class File; }
-namespace Sve { class File; }
-namespace Txt
-{
-class CityFile;
-class MapsFile;
-class WorldmapFile;
+    namespace Format
+    {
+        namespace Dat
+        {
+            class File;
+            class Item;
+            class MiscFile;
+            class Stream;
+        }
+        namespace Frm { class File; }
+        namespace Pal { class File; }
+        namespace Lst { class File; }
+        namespace Pro { class File; }
+        namespace Txt
+        {
+            class CityFile;
+            class MapsFile;
+            class WorldmapFile;
 
-template <typename T>
-class CSVBasedFile;
+            template <typename T>
+            class CSVBasedFile;
 
-struct EndDeath;
-struct EndGame;
-struct GenRep;
-struct Holodisk;
-struct KarmaVar;
-struct Quest;
+            struct EndDeath;
+            struct EndGame;
+            struct GenRep;
+            struct Holodisk;
+            struct KarmaVar;
+            struct Quest;
 
-typedef CSVBasedFile<EndDeath> EndDeathFile;
-typedef CSVBasedFile<EndGame> EndGameFile;
-typedef CSVBasedFile<GenRep> GenRepFile;
-typedef CSVBasedFile<Holodisk> HolodiskFile;
-typedef CSVBasedFile<KarmaVar> KarmaVarFile;
-typedef CSVBasedFile<Quest> QuestsFile;
-}
-}
+            typedef CSVBasedFile<EndDeath> EndDeathFile;
+            typedef CSVBasedFile<EndGame> EndGameFile;
+            typedef CSVBasedFile<GenRep> GenRepFile;
+            typedef CSVBasedFile<Holodisk> HolodiskFile;
+            typedef CSVBasedFile<KarmaVar> KarmaVarFile;
+            typedef CSVBasedFile<Quest> QuestsFile;
+        }
+        class BaseFormatFile;
+    }
 }
 
 namespace Falltergeist
 {
-namespace Game
-{
-    class Location;
-}
-namespace Graphics
-{
-    class Texture;
-    class Font;
-    class Shader;
-}
+    namespace Game
+    {
+        class Location;
+    }
+    namespace Graphics
+    {
+        class Texture;
+        class Font;
+        class Shader;
+    }
 
+    class ResourceManager
+    {
+        public:
+            static ResourceManager* getInstance();
 
-class ResourceManager
-{
+            static std::shared_ptr<Format::BaseFormatFile> get(const std::string& filename);
 
-public:
-    static ResourceManager* getInstance();
+            Format::Dat::Item* datFileItem(const std::string& filename);
+            Format::Frm::File* frmFileType(const std::string& filename);
+            Format::Frm::File* frmFileType(unsigned int FID);
+            Format::Pal::File* palFileType(const std::string& filename);
+            std::shared_ptr<Format::BaseFormatFile> intFileType(unsigned int SID);
+            Format::Lst::File* lstFileType(const std::string& filename);
+            Format::Pro::File* proFileType(const std::string& filename);
+            Format::Pro::File* proFileType(unsigned int PID);
 
-    Format::Aaf::File* aafFileType(const std::string& filename);
-    Format::Acm::File* acmFileType(const std::string& filename);
-    Format::Bio::File* bioFileType(const std::string& filename);
-    Format::Dat::Item* datFileItem(const std::string& filename);
-    Format::Frm::File* frmFileType(const std::string& filename);
-    Format::Frm::File* frmFileType(unsigned int FID);
-    Format::Fon::File* fonFileType(const std::string& filename);
-    Format::Gam::File* gamFileType(const std::string& filename);
-    Format::Gcd::File* gcdFileType(const std::string& filename);
-    Format::Pal::File* palFileType(const std::string& filename);
-    Format::Int::File* intFileType(const std::string& filename);
-    Format::Int::File* intFileType(unsigned int SID);
-    Format::Lip::File* lipFileType(const std::string& filename);
-    Format::Lst::File* lstFileType(const std::string& filename);
-    Format::Map::File* mapFileType(const std::string& filename);
-    Format::Msg::File* msgFileType(const std::string& filename);
-    Format::Mve::File* mveFileType(const std::string& filename);
-    Format::Pro::File* proFileType(const std::string& filename);
-    Format::Pro::File* proFileType(unsigned int PID);
-    Format::Rix::File* rixFileType(const std::string& filename);
-    Format::Sve::File* sveFileType(const std::string& filename);
-    Format::Dat::MiscFile* miscFileType(const std::string& filename);
+            Format::Txt::CityFile* cityTxt();
+            Format::Txt::MapsFile* mapsTxt();
+            Format::Txt::WorldmapFile* worldmapTxt();
+            Format::Txt::EndDeathFile* endDeathTxt();
+            Format::Txt::EndGameFile* endGameTxt();
+            Format::Txt::GenRepFile* genRepTxt();
+            Format::Txt::HolodiskFile* holodiskTxt();
+            Format::Txt::KarmaVarFile* karmaVarTxt();
+            Format::Txt::QuestsFile* questsTxt();
 
-    Format::Txt::CityFile* cityTxt();
-    Format::Txt::MapsFile* mapsTxt();
-    Format::Txt::WorldmapFile* worldmapTxt();
-    Format::Txt::EndDeathFile* endDeathTxt();
-    Format::Txt::EndGameFile* endGameTxt();
-    Format::Txt::GenRepFile* genRepTxt();
-    Format::Txt::HolodiskFile* holodiskTxt();
-    Format::Txt::KarmaVarFile* karmaVarTxt();
-    Format::Txt::QuestsFile* questsTxt();
+            Graphics::Texture* texture(const std::string& filename);
+            Graphics::Font* font(const std::string& filename = "font1.aaf");
+            Graphics::Shader* shader(const std::string& filename);
+            void unloadResources();
+            std::string FIDtoFrmName(unsigned int FID);
+            Game::Location* gameLocation(unsigned int number);
+            void shutdown();
 
-    Graphics::Texture* texture(const std::string& filename);
-    Graphics::Font* font(const std::string& filename = "font1.aaf");
-    Graphics::Shader* shader(const std::string& filename);
-    void unloadResources();
-    std::string FIDtoFrmName(unsigned int FID);
-    Game::Location* gameLocation(unsigned int number);
-    void shutdown();
+        protected:
+            friend class Base::Singleton<ResourceManager>;
 
-protected:
-    friend class Base::Singleton<ResourceManager>;
+            std::vector<std::unique_ptr<Format::Dat::File>> _datFiles;
+            std::unordered_map<std::string, std::unique_ptr<Format::Dat::Item>> _datItems;
+            std::unordered_map<std::string, std::unique_ptr<Graphics::Texture>> _textures;
+            std::unordered_map<std::string, std::unique_ptr<Graphics::Font>> _fonts;
+            std::unordered_map<std::string, std::unique_ptr<Graphics::Shader>> _shaders;
 
-    std::vector<std::unique_ptr<Format::Dat::File>> _datFiles;
-    std::unordered_map<std::string, std::unique_ptr<Format::Dat::Item>> _datItems;
-    std::unordered_map<std::string, std::unique_ptr<Graphics::Texture>> _textures;
-    std::unordered_map<std::string, std::unique_ptr<Graphics::Font>> _fonts;
-    std::unordered_map<std::string, std::unique_ptr<Graphics::Shader>> _shaders;
+            ResourceManager();
+            ResourceManager(const ResourceManager&) = delete;
+            ResourceManager& operator=(const ResourceManager&) = delete;
 
-    ResourceManager();
-    ResourceManager(const ResourceManager&) = delete;
-    ResourceManager& operator=(const ResourceManager&) = delete;
+            // Retrieves given file item from "virtual file system".
+            // All items are cached after being requested for the first time.
+            template <class T>
+            T* _datFileItem(std::string filename);
 
-    // Retrieves given file item from "virtual file system".
-    // All items are cached after being requested for the first time.
-    template <class T>
-    T* _datFileItem(std::string filename);
-
-    // Searches for a given file within virtual "file system" and calls the given callback with Dat::Stream created from that file.
-    void _loadStreamForFile(std::string filename, std::function<void(Format::Dat::Stream&&)> callback);
-};
-
+            // Searches for a given file within virtual "file system" and calls the given callback with Dat::Stream created from that file.
+            void _loadStreamForFile(std::string filename, std::function<void(Format::Dat::Stream&&)> callback);
+    };
 }
 
 #endif // FALLTERGEIST_RESOURCEMANAGER_H

@@ -47,7 +47,7 @@ namespace UI
 class MvePlayer : public Falltergeist::UI::Base
 {
 public:
-    MvePlayer(Format::Mve::File* mve);
+    MvePlayer(std::shared_ptr<Format::Mve::File> mve);
     ~MvePlayer() override;
 
     void think() override;
@@ -59,7 +59,7 @@ public:
     uint32_t frame();
 
 private:
-    Format::Mve::File* _mve = nullptr;
+    std::shared_ptr<Format::Mve::File> _mve;
     std::unique_ptr<Format::Mve::Chunk> _chunk;
 
     Graphics::Movie* _movie;

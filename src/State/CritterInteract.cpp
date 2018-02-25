@@ -243,13 +243,13 @@ namespace Falltergeist
         void CritterInteract::playSpeech(const std::string &speech)
         {
             _fidgetTimer.stop();
-            Game::getInstance()->mixer()->playACMSpeech(_headName+"/"+speech+".acm");
+            Game::getInstance()->mixer()->playACMSpeech(_headName + "/" + speech + ".acm");
             // start timer
             _startTime = SDL_GetTicks();
             _nextIndex = 0;
             _phase = Phase::TALK;
 
-            _lips = ResourceManager::getInstance()->lipFileType("sound/speech/"+_headName+"/"+speech+".lip");
+            _lips = ResourceManager::get("sound/speech/" + _headName+"/" + speech + ".lip");
             auto head = dynamic_cast<UI::AnimationQueue*>(getUI("head"));
             head->stop();
             head->clear();

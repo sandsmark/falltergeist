@@ -45,7 +45,7 @@ namespace Falltergeist
 {
     namespace VM
     {
-        Script::Script(Format::Int::File* script, Game::Object* owner)
+        Script::Script(std::shared_ptr<Format::Int::File> script, Game::Object* owner)
         {
             _owner = owner;
             _script = script;
@@ -55,7 +55,7 @@ namespace Falltergeist
         Script::Script(const std::string& filename, Game::Object* owner)
         {
             _owner = owner;
-            _script = ResourceManager::getInstance()->intFileType(filename);
+            _script = ResourceManager::get(filename);
             if (!_script) throw Exception("Script::VM() - script is null: " + filename);
         }
 
@@ -131,7 +131,7 @@ namespace Falltergeist
         {
             auto lst = ResourceManager::getInstance()->lstFileType("scripts/scripts.lst");
             auto scriptName = lst->strings()->at(msg_file_num - 1);
-            auto msg = ResourceManager::getInstance()->msgFileType("text/english/dialog/" + scriptName.substr(0, scriptName.find(".int")).append(".msg"));
+            auto msg = std::dynamic_pointer_cast<Format::Msg::File>(ResourceManager::get("text/english/dialog/" + scriptName.substr(0, scriptName.find(".int")).append(".msg")));
             if (!msg) {
                 Logger::debug("SCRIPT") << "Script::msgMessage(file, num) not found. file: " + std::to_string(msg_file_num) + " num: " + std::to_string(msg_num) << std::endl;
                 return "";
@@ -143,7 +143,7 @@ namespace Falltergeist
         {
             auto lst = ResourceManager::getInstance()->lstFileType("scripts/scripts.lst");
             auto scriptName = lst->strings()->at(msg_file_num - 1);
-            auto msg = ResourceManager::getInstance()->msgFileType("text/english/dialog/" + scriptName.substr(0, scriptName.find(".int")).append(".msg"));
+            auto msg = std::dynamic_pointer_cast<Format::Msg::File>(ResourceManager::get("text/english/dialog/" + scriptName.substr(0, scriptName.find(".int")).append(".msg")));
             if (!msg) {
                 Logger::debug("SCRIPT") << "Script::msgSpeech(file, num) not found. file: " + std::to_string(msg_file_num) + " num: " + std::to_string(msg_num) << std::endl;
                 return "";

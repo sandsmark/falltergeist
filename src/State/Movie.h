@@ -66,7 +66,7 @@ namespace Falltergeist
                 int _id;
                 bool _started = false;
                 std::pair<unsigned int,std::string> _nextSubLine;
-                Format::Sve::File* _subs = nullptr;
+                std::shared_ptr<Format::Sve::File> _subs;
                 bool _hasSubs = false;
                 std::vector<effect_t> _effects;
                 unsigned int _effect_index=0;

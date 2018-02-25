@@ -243,7 +243,7 @@ namespace Falltergeist
             if (!_GVARS.empty()) {
                 return;
             }
-            auto gam = ResourceManager::getInstance()->gamFileType("data/vault13.gam");
+            auto gam = std::dynamic_pointer_cast<Format::Gam::File>(ResourceManager::get("data/vault13.gam"));
             for (auto gvar : *gam->GVARS()) {
                 _GVARS.push_back(gvar.second);
             }

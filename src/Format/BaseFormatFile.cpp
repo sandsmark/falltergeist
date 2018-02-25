@@ -110,5 +110,19 @@ namespace Falltergeist
         {
             return (int8_t) uint8();
         }
+
+        std::string BaseFormatFile::filename()
+        {
+            return _file->name();
+        }
+
+        std::istringstream BaseFormatFile::getStream()
+        {
+            _file->seek(0, SEEK_SET);
+            std::string text;
+            text.resize(_file->size());
+            _file->read(&text, _file->size());
+            return std::istringstream(text);
+        }
     }
 }

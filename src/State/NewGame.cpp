@@ -135,7 +135,8 @@ namespace Falltergeist
         void NewGame::doCreate()
         {
             auto none = std::make_unique<Game::DudeObject>();
-            none->loadFromGCDFile(ResourceManager::getInstance()->gcdFileType("premade/blank.gcd"));
+            auto blank = std::dynamic_pointer_cast<Format::Gcd::File>(ResourceManager::get("premade/blank.gcd"));
+            none->loadFromGCDFile(blank);
             Game::getInstance()->setPlayer(std::move(none));
             Game::getInstance()->pushState(new PlayerCreate());
         }
@@ -294,18 +295,18 @@ namespace Falltergeist
         void NewGame::onStateActivate(Event::State* event)
         {
             auto combat = std::make_unique<Game::DudeObject>();
-            combat->loadFromGCDFile(ResourceManager::getInstance()->gcdFileType("premade/combat.gcd"));
-            combat->setBiography(ResourceManager::getInstance()->bioFileType("premade/combat.bio")->text());
+            combat->loadFromGCDFile(std::dynamic_pointer_cast<Format::Gcd::File>(ResourceManager::get("premade/combat.gcd")));
+            combat->setBiography(std::dynamic_pointer_cast<Format::Bio::File>(ResourceManager::get("premade/combat.bio"))->text());
             _characters.emplace_back(std::move(combat));
 
             auto stealth = std::make_unique<Game::DudeObject>();
-            stealth->loadFromGCDFile(ResourceManager::getInstance()->gcdFileType("premade/stealth.gcd"));
-            stealth->setBiography(ResourceManager::getInstance()->bioFileType("premade/stealth.bio")->text());
+            stealth->loadFromGCDFile(std::dynamic_pointer_cast<Format::Gcd::File>(ResourceManager::get("premade/stealth.gcd")));
+            stealth->setBiography(std::dynamic_pointer_cast<Format::Bio::File>(ResourceManager::get("premade/stealth.bio"))->text());
             _characters.emplace_back(std::move(stealth));
 
             auto diplomat = std::make_unique<Game::DudeObject>();
-            diplomat->loadFromGCDFile(ResourceManager::getInstance()->gcdFileType("premade/diplomat.gcd"));
-            diplomat->setBiography(ResourceManager::getInstance()->bioFileType("premade/diplomat.bio")->text());
+            diplomat->loadFromGCDFile(std::dynamic_pointer_cast<Format::Gcd::File>(ResourceManager::get("premade/diplomat.gcd")));
+            diplomat->setBiography(std::dynamic_pointer_cast<Format::Bio::File>(ResourceManager::get("premade/diplomat.bio"))->text());
             _characters.emplace_back(std::move(diplomat));
 
             _changeCharacter();

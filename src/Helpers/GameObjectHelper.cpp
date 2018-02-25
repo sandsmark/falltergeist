@@ -115,14 +115,14 @@ namespace Falltergeist
             }
 
             if (mapObject->scriptId() > 0) {
-                auto intFile = ResourceManager::getInstance()->intFileType(mapObject->scriptId());
+                auto intFile = std::dynamic_pointer_cast<Format::Int::File>(ResourceManager::getInstance()->intFileType(mapObject->scriptId()));
                 if (intFile) {
                     object->setScript(new VM::Script(intFile, object));
                     object->setSID(mapObject->scriptId());
                 }
             }
             if (mapObject->mapScriptId() > 0 && mapObject->mapScriptId() != mapObject->scriptId()) {
-                auto intFile = ResourceManager::getInstance()->intFileType(mapObject->mapScriptId());
+                auto intFile = std::dynamic_pointer_cast<Format::Int::File>(ResourceManager::getInstance()->intFileType(mapObject->mapScriptId()));
                 if (intFile) {
                     object->setScript(new VM::Script(intFile, object));
                     object->setSID(mapObject->mapScriptId());
@@ -130,7 +130,7 @@ namespace Falltergeist
             }
 
             if (object->SID() > 0) {
-                auto msg = ResourceManager::getInstance()->msgFileType("text/english/game/scrname.msg");
+                auto msg = std::dynamic_pointer_cast<Format::Msg::File>(ResourceManager::get("text/english/game/scrname.msg"));
                 try {
                     object->setScrName(msg->message(object->SID() + 101)->text());
                 }

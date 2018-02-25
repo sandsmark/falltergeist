@@ -116,13 +116,13 @@ namespace Falltergeist
         void Mixer::playACMMusic(const std::string& filename, bool loop)
         {
             Mix_HookMusic(NULL, NULL);
-            auto acm = ResourceManager::getInstance()->acmFileType(Game::getInstance()->settings()->musicPath()+filename);
+            auto acm = std::dynamic_pointer_cast<Format::Acm::File>(ResourceManager::get(Game::getInstance()->settings()->musicPath()+filename));
             if (!acm) return;
             _lastMusic = filename;
             _loop = loop;
             musicCallback = std::bind(&Mixer::_musicCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
             acm->rewind();
-            Mix_HookMusic(myMusicPlayer, (void *)acm);
+            Mix_HookMusic(myMusicPlayer, (void *)acm.get());
         }
 
         void Mixer::_speechCallback(void *udata, uint8_t *stream, uint32_t len)
@@ -149,11 +149,11 @@ namespace Falltergeist
         void Mixer::playACMSpeech(const std::string& filename)
         {
             Mix_HookMusic(NULL, NULL);
-            auto acm = ResourceManager::getInstance()->acmFileType("sound/speech/"+filename);
+            auto acm = std::dynamic_pointer_cast<Format::Acm::File>(ResourceManager::get("sound/speech/" + filename));
             if (!acm) return;
             musicCallback = std::bind(&Mixer::_speechCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
             acm->rewind();
-            Mix_HookMusic(myMusicPlayer, (void *)acm);
+            Mix_HookMusic(myMusicPlayer, (void *)acm.get());
         }
 
         void Mixer::_movieCallback(void *udata, uint8_t *stream, uint32_t len)
@@ -177,7 +177,7 @@ namespace Falltergeist
 
         void Mixer::playACMSound(const std::string& filename)
         {
-            auto acm = ResourceManager::getInstance()->acmFileType(filename);
+            auto acm = std::dynamic_pointer_cast<Format::Acm::File>(ResourceManager::get(filename));
             if (!acm) return;
             Logger::debug("Mixer") << "playing: " << acm->filename() << std::endl;
             Mix_Chunk *chunk = NULL;

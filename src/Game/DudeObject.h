@@ -50,7 +50,7 @@ namespace Falltergeist
                 DudeObject();
                 ~DudeObject() override = default;
 
-                void loadFromGCDFile(Format::Gcd::File* gcd);
+                void loadFromGCDFile(std::shared_ptr<Format::Gcd::File> gcd);
 
                 int experience() const;
                 void setExperience(int value);

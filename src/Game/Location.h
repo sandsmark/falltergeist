@@ -60,7 +60,7 @@ namespace Falltergeist
                 Location();
                 ~Location();
 
-                void loadFromMapFile(Falltergeist::Format::Map::File *file);
+                void loadFromMapFile(std::shared_ptr<Falltergeist::Format::Map::File> file);
 
                 std::vector<int32_t>* MVARS();
 

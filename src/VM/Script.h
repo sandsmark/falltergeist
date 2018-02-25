@@ -56,7 +56,7 @@ namespace Falltergeist
         class Script
         {
             public:
-                Script(Format::Int::File* script, Game::Object* owner);
+                Script(std::shared_ptr<Format::Int::File> script, Game::Object* owner);
                 Script(const std::string& filename, Game::Object* owner);
                 virtual ~Script();
                 void run();
@@ -107,7 +107,7 @@ namespace Falltergeist
 
                 int _fixedParam = 0;
                 int _actionUsed = 0;
-                Format::Int::File* _script = 0;
+                std::shared_ptr<Format::Int::File> _script;
                 bool _initialized = false;
                 bool _overrides = false;
                 Stack _dataStack;

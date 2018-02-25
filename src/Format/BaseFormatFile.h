@@ -26,6 +26,7 @@
 #define FALLTERGEIST_FORMAT_BASEFORMATFILE_H
 
 // C++ standard includes
+#include <sstream>
 
 // Falltergeist includes
 
@@ -55,6 +56,9 @@ namespace Falltergeist
                 int16_t int16();
                 uint8_t uint8();
                 int8_t int8();
+
+                std::string filename();
+                std::istringstream getStream();
 
             protected:
                 ttvfs::CountedPtr<ttvfs::File> _file;

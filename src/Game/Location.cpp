@@ -52,7 +52,7 @@ namespace Falltergeist
         {
         }
 
-        void Location::loadFromMapFile(Falltergeist::Format::Map::File* mapFile)
+        void Location::loadFromMapFile(std::shared_ptr<Falltergeist::Format::Map::File> mapFile)
         {
             setName(mapFile->name().substr(0, mapFile->name().find(".")));
             setDefaultElevationIndex(mapFile->defaultElevation());
@@ -61,7 +61,7 @@ namespace Falltergeist
 
             // Initialize MAP vars
             if (!mapFile->MVARS().empty()) {
-                auto gam = ResourceManager::getInstance()->gamFileType("maps/" + name() + ".gam");
+                auto gam = std::dynamic_pointer_cast<Format::Gam::File>(ResourceManager::get("maps/" + name() + ".gam"));
                 if (gam) {
                     for (auto mvar : *gam->MVARS()) {
                         _MVARS.push_back(mvar.second);

@@ -48,7 +48,7 @@ namespace Falltergeist
             setLightRadius(4);
         }
 
-        void DudeObject::loadFromGCDFile(Format::Gcd::File* gcd)
+        void DudeObject::loadFromGCDFile(std::shared_ptr<Format::Gcd::File> gcd)
         {
             for (unsigned i = (unsigned)STAT::STRENGTH; i <= (unsigned)STAT::LUCK; i++) {
                 setStat((STAT)i, gcd->stat((STAT)i));

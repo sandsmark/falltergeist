@@ -76,10 +76,9 @@ namespace Falltergeist
 
             if (cfglst->strings()->at(_id)!="reserved.cfg")
             {
-                auto moviecfg = ResourceManager::getInstance()->miscFileType(moviecfgfile);
+                auto moviecfg = ResourceManager::get(moviecfgfile);
                 //parse ini
-                moviecfg->stream().setPosition(0);
-                std::istream str(&moviecfg->stream());
+                std::istringstream str = moviecfg->getStream();
                 auto inifile = new Ini::Parser(str);
                 auto ini = inifile->parse();
                 int total_effects = ini->section("info")->propertyInt("total_effects",0);
@@ -105,12 +104,13 @@ namespace Falltergeist
             auto sublst = ResourceManager::getInstance()->lstFileType("data/subtitles.lst");
             std::string subfile = "text/english/cuts/" + sublst->strings()->at(_id);
 
-            if (sublst->strings()->at(_id)!="reserved.sve")
-            {
-                _subs = ResourceManager::getInstance()->sveFileType(subfile);
-                if (_subs) _hasSubs = true;
+            if (sublst->strings()->at(_id) != "reserved.sve") {
+                _subs = ResourceManager::get(subfile);
+                if (_subs) {
+                    _hasSubs = true;
+                }
             }
-            addUI("movie", new UI::MvePlayer(ResourceManager::getInstance()->mveFileType(movie)));
+            addUI("movie", new UI::MvePlayer(std::dynamic_pointer_cast<Format::Mve::File>(ResourceManager::get(movie))));
 
             auto font0_ffffffff = ResourceManager::getInstance()->font("font1.aaf");
             auto subLabel = new UI::TextArea("", 0, 320+35);

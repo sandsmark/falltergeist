@@ -86,7 +86,7 @@ int32_t get_int(uint8_t *data)
 }
 
 
-MvePlayer::MvePlayer(Format::Mve::File* mve) : Falltergeist::UI::Base()
+MvePlayer::MvePlayer(std::shared_ptr<Format::Mve::File> mve) : Falltergeist::UI::Base()
 {
     _movie = new Graphics::Movie();
     _mve = mve;

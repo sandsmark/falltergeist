@@ -58,7 +58,7 @@ std::string _t(MSG_TYPE type, unsigned int number)
         throw Exception("_t() - wrong MSG file type: " + std::to_string(type));
     }
 
-    auto msg = ResourceManager::getInstance()->msgFileType(msgFiles[type]);
+    auto msg = std::dynamic_pointer_cast<Format::Msg::File>(ResourceManager::get(msgFiles[type]));
     return msg->message(number)->text();
 }
 

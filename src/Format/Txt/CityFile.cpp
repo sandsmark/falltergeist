@@ -24,7 +24,7 @@
 
 // C++ standard includes
 #include <string>
-#include <sstream>
+#include <strstream>
 
 // Falltergeist includes
 #include "../../Format/Ini/File.h"
@@ -41,13 +41,9 @@ namespace Falltergeist
         {
             CityFile::CityFile(ttvfs::CountedPtr<ttvfs::File> file) : BaseFormatFile(file)
             {
-                std::string text;
-                text.resize(file->size());
-                file->read(&text, file->size());
-
                 // TODO find more optimal way
-                std::istringstream istr(text);
-                _parseText(istr);
+                auto stream = getStream();
+                _parseText(stream);
             }
 
             const std::vector<City>& CityFile::cities() const

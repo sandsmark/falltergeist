@@ -52,7 +52,9 @@ namespace Falltergeist
 
         void Credits::init()
         {
-            if (_initialized) return;
+            if (_initialized) {
+                return;
+            }
             State::init();
 
             setModal(true);
@@ -62,10 +64,8 @@ namespace Falltergeist
             auto renderer = Game::getInstance()->renderer();
             setPosition(Point((renderer->size().width() - 640) / 2, renderer->size().height()));
 
-            auto credits = ResourceManager::getInstance()->miscFileType("text/english/credits.txt");
-            std::stringstream ss;
-            credits->stream().setPosition(0);
-            ss << &credits->stream();
+            auto credits = ResourceManager::get("text/english/credits.txt");
+            std::istringstream ss = credits->getStream();
             std::string line;
 
             auto font_default = ResourceManager::getInstance()->font("font4.aaf");

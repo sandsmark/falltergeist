@@ -364,11 +364,8 @@ namespace Falltergeist
             WorldmapFile::WorldmapFile(ttvfs::CountedPtr<ttvfs::File> file) : BaseFormatFile(file)
             {
                 // TODO find more optimal way
-                std::string text;
-                text.resize(file->size());
-                file->read(&text, file->size());
-                std::istringstream istr(text);
-                _parseText(istr);
+                auto stream = getStream();
+                _parseText(stream);
             }
         }
     }

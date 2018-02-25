@@ -429,7 +429,7 @@ namespace Falltergeist {
                 }
             }
             if (useDefault) {
-                auto protoMsg = ResourceManager::getInstance()->msgFileType("text/english/game/proto.msg");
+                auto protoMsg = std::dynamic_pointer_cast<Format::Msg::File>(ResourceManager::get("text/english/game/proto.msg"));
                 char buf[512];
                 sprintf(buf, protoMsg->message(490)->text().c_str(), name().c_str());
                 Game::getInstance()->locationState()->displayMessage(std::string(buf));
