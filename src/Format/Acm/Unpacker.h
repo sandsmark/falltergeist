@@ -32,75 +32,65 @@
 // C++ standard includes
 
 // Falltergeist includes
-#include "../Dat/Item.h"
 
 // Third party includes
+#include <ttvfs.h>
 
 #define UNPACKER_BUFFER_SIZE 16384
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Dat
-{
-class Stream;
-}
+    namespace Format
+    {
+        namespace Acm
+        {
+            class ValueUnpacker
+            {
+                public:
+                    ValueUnpacker(int levCnt, int sbCount, ttvfs::CountedPtr<ttvfs::File> file);
+                    virtual ~ValueUnpacker();
 
-namespace Acm
-{
+                    // These functions are used to fill the buffer with the amplitude values
+                    int return0(int pass, int ind);
+                    int zeroFill(int pass, int ind);
+                    int linearFill(int pass, int ind);
+                    int k1_3bits(int pass, int ind);
+                    int k1_2bits(int pass, int ind);
+                    int t1_5bits(int pass, int ind);
+                    int k2_4bits(int pass, int ind);
+                    int k2_3bits(int pass, int ind);
+                    int t2_7bits(int pass, int ind);
+                    int k3_5bits(int pass, int ind);
+                    int k3_4bits(int pass, int ind);
+                    int k4_5bits(int pass, int ind);
+                    int k4_4bits(int pass, int ind);
+                    int t3_7bits(int pass, int ind);
 
-class ValueUnpacker
-{
+                    int init();
+                    void reset();
+                    int getOneBlock(int *block);
 
-public:
+                protected:
+                    // Parameters of ACM stream
+                    int _levels, _subblocks;
+                    ttvfs::CountedPtr<ttvfs::File> _file;
+                    // Bits
+                    unsigned int _nextBits; // new bits
+                    int _availBits; // count of new bits
+                    unsigned char _bitsBuffer[UNPACKER_BUFFER_SIZE];
+                    size_t _bufferBitOffset;
 
-    ValueUnpacker(int levCnt, int sbCount, Dat::Stream* stream);
-    virtual ~ValueUnpacker();
+                    int _sbSize;
+                    short *_ampBuffer, *_buffMiddle;
+                    int *_blockPtr;
 
-    // These functions are used to fill the buffer with the amplitude values
-    int return0(int pass, int ind);
-    int zeroFill(int pass, int ind);
-    int linearFill(int pass, int ind);
-    int k1_3bits(int pass, int ind);
-    int k1_2bits(int pass, int ind);
-    int t1_5bits(int pass, int ind);
-    int k2_4bits(int pass, int ind);
-    int k2_3bits(int pass, int ind);
-    int t2_7bits(int pass, int ind);
-    int k3_5bits(int pass, int ind);
-    int k3_4bits(int pass, int ind);
-    int k4_5bits(int pass, int ind);
-    int k4_4bits(int pass, int ind);
-    int t3_7bits(int pass, int ind);
+                    // Reading routines
+                    void _prepareBits(int bits); // request bits
+                    int _getBits(int bits); // request and return next bits
+            };
 
-    int init();
-    void reset();
-    int getOneBlock(int *block);
-
-protected:
-    // Parameters of ACM stream
-    int _levels, _subblocks;
-    Dat::Stream *stream;
-    // Bits
-    unsigned int _nextBits; // new bits
-    int _availBits; // count of new bits
-    unsigned char _bitsBuffer[UNPACKER_BUFFER_SIZE];
-    size_t _bufferBitOffset;
-
-    int _sbSize;
-    short *_ampBuffer, *_buffMiddle;
-    int *_blockPtr;
-
-    // Reading routines
-    void _prepareBits(int bits); // request bits
-    int _getBits(int bits); // request and return next bits
-
-};
-
-typedef int (ValueUnpacker::*FillerProc)(int pass, int ind);
-
-}
-}
+            typedef int (ValueUnpacker::*FillerProc)(int pass, int ind);
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_ACM_VALUEUNPACKER_H

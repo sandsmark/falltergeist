@@ -46,7 +46,7 @@ namespace Falltergeist
             class File : public BaseFormatFile
             {
                 public:
-                    File(ttvfs::CountedPtr<ttvfs::File> file);
+                    explicit File(ttvfs::CountedPtr<ttvfs::File> file);
 
                     uint32_t* rgba();
 
@@ -67,8 +67,6 @@ namespace Falltergeist
                     uint16_t _spaceWidth = 0;
                     uint16_t _verticalGap = 0;
                     std::vector<uint32_t> _rgba;
-
-                    void _loadRgba();
             };
         }
     }

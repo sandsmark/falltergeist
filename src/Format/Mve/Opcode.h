@@ -35,36 +35,32 @@
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Mve
-{
+    namespace Format
+    {
+        namespace Mve
+        {
+            class Opcode
+            {
+                public:
+                    Opcode(uint16_t length);
 
-class Opcode
-{
+                    uint16_t length() const;
 
-public:
-    Opcode(uint16_t length);
+                    uint8_t type() const;
+                    void setType(uint8_t value);
 
-    uint16_t length() const;
+                    uint8_t version() const;
+                    void setVersion(uint8_t value);
 
-    uint8_t type() const;
-    void setType(uint8_t value);
+                    uint8_t* data();
 
-    uint8_t version() const;
-    void setVersion(uint8_t value);
-
-    uint8_t* data();
-
-protected:
-    uint16_t _length = 0;
-    uint8_t _type = 0;
-    uint8_t _version = 0;
-    Base::Buffer<uint8_t> _data;
-
-};
-
-}
-}
+                protected:
+                    uint16_t _length = 0;
+                    uint8_t _type = 0;
+                    uint8_t _version = 0;
+                    Base::Buffer<uint8_t> _data;
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_MVE_OPCODE_H

@@ -35,22 +35,20 @@
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Acm
-{
-
-struct Header
-{
-    uint32_t signature;
-    uint32_t samples;
-    uint16_t channels;
-    uint16_t rate;
-    uint16_t levels : 4;
-    uint16_t subblocks : 12;
-};
-
-}
-}
+    namespace Format
+    {
+        namespace Acm
+        {
+            struct Header
+            {
+                uint32_t signature;
+                uint32_t samples;
+                uint16_t channels;
+                uint16_t rate;
+                uint16_t levels : 4;
+                uint16_t subblocks : 12;
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_ACM_GENERAL_H

@@ -39,10 +39,24 @@ namespace Falltergeist
         class BaseFormatFile
         {
             public:
-                BaseFormatFile(ttvfs::CountedPtr<ttvfs::File> file);
+                explicit BaseFormatFile(ttvfs::CountedPtr<ttvfs::File> file);
                 virtual ~BaseFormatFile();
 
-            private:
+                BaseFormatFile& operator>>(int32_t &value);
+                BaseFormatFile& operator>>(uint32_t &value);
+                BaseFormatFile& operator>>(int16_t &value);
+                BaseFormatFile& operator>>(uint16_t &value);
+                BaseFormatFile& operator>>(int8_t &value);
+                BaseFormatFile& operator>>(uint8_t &value);
+
+                uint32_t uint32();
+                int32_t int32();
+                uint16_t uint16();
+                int16_t int16();
+                uint8_t uint8();
+                int8_t int8();
+
+            protected:
                 ttvfs::CountedPtr<ttvfs::File> _file;
         };
     }

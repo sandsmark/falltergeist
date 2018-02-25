@@ -31,35 +31,27 @@
 #include <string>
 
 // Falltergeist includes
-#include "../Dat/Item.h"
+#include "../../Format/BaseFormatFile.h"
 
 // Third party includes
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Dat
-{
-class Stream;
-}
+    namespace Format
+    {
+        namespace Sve
+        {
+            class File : public BaseFormatFile
+            {
+                public:
+                    explicit File(ttvfs::CountedPtr<ttvfs::File> file);
+                    std::pair<int,std::string> getSubLine(int frame);
 
-namespace Sve
-{
-
-class File : public Dat::Item
-{
-public:
-    File(Dat::Stream&& stream);
-    std::pair<int,std::string> getSubLine(int frame);
-
-protected:
-    std::map<int,std::string> _subs;
-    void _addString(std::string line);
-
-};
-
-}
-}
+                protected:
+                    std::map<int,std::string> _subs;
+                    void _addString(std::string line);
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_SVE_FILE_H

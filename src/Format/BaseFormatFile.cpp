@@ -41,5 +41,74 @@ namespace Falltergeist
         BaseFormatFile::~BaseFormatFile()
         {
         }
+
+        BaseFormatFile& BaseFormatFile::operator>>(int32_t &value)
+        {
+            _file->read(reinterpret_cast<char *>(&value), sizeof(value));
+            return *this;
+        }
+
+        BaseFormatFile& BaseFormatFile::operator>>(uint32_t &value)
+        {
+            return *this >> (int32_t&) value;
+        }
+
+        BaseFormatFile& BaseFormatFile::operator>>(int16_t &value)
+        {
+            _file->read(reinterpret_cast<char *>(&value), sizeof(value));
+            return *this;
+        }
+
+        BaseFormatFile& BaseFormatFile::operator>>(uint16_t &value)
+        {
+            return *this >> (int16_t&) value;
+        }
+
+        BaseFormatFile& BaseFormatFile::operator>>(int8_t &value)
+        {
+            _file->read(reinterpret_cast<char *>(&value), sizeof(value));
+            return *this;
+        }
+
+        BaseFormatFile& BaseFormatFile::operator>>(uint8_t &value)
+        {
+            return *this >> (int8_t&) value;
+        }
+
+        uint32_t BaseFormatFile::uint32()
+        {
+            uint32_t value;
+            _file->read(reinterpret_cast<char *>(&value), sizeof(value));
+            return value;
+        }
+
+        int32_t BaseFormatFile::int32()
+        {
+            return (int32_t) uint32();
+        }
+
+        uint16_t BaseFormatFile::uint16()
+        {
+            uint16_t value;
+            _file->read(reinterpret_cast<char *>(&value), sizeof(value));
+            return value;
+        }
+
+        int16_t BaseFormatFile::int16()
+        {
+            return (int16_t) uint16();
+        }
+
+        uint8_t BaseFormatFile::uint8()
+        {
+            uint8_t value;
+            _file->read(reinterpret_cast<char *>(&value), sizeof(value));
+            return value;
+        }
+
+        int8_t BaseFormatFile::int8()
+        {
+            return (int8_t) uint8();
+        }
     }
 }

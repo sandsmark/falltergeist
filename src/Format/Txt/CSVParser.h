@@ -39,34 +39,31 @@
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Txt
-{
+    namespace Format
+    {
+        namespace Txt
+        {
+            typedef std::list<std::vector<Ini::Value>> CSVFile;
 
-typedef std::list<std::vector<Ini::Value>> CSVFile;
+            /**
+             * @brief Parser of CSV files.
+             */
+            class CSVParser : public Parser
+            {
+                public:
+                    CSVParser(std::istream &stream);
+                    ~CSVParser();
 
-/**
- * @brief Parser of CSV files.
- */
-class CSVParser : public Parser
-{
-public:
-    CSVParser(std::istream &stream);
-    ~CSVParser();
+                    std::unique_ptr<CSVFile> parse();
 
-    std::unique_ptr<CSVFile> parse();
+                private:
+                    std::istream &_stream; // stream to parse
 
-private:
-    std::istream &_stream; // stream to parse
+                protected:
 
-protected:
-
-    void _stripComments(std::string& line);
-
-};
-
-}
-}
+                    void _stripComments(std::string& line);
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_TXT_CSVPARSER_H

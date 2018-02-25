@@ -29,99 +29,92 @@
 #include <vector>
 
 // Falltergeist includes
-#include "../Dat/Item.h"
+#include "../../Format/BaseFormatFile.h"
 
 // Third party includes
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Dat
-{
-class Stream;
-}
-
-namespace Txt
-{
-
-/**
- * @brief City entrance information.
- */
-struct CityEntrance
-{
-    /**
-     * Start state of entrance (visible or not)
-     */
-    bool startState;
-    /**
-     * X coordinate on town map
-     */
-    int townMapX;
-    /**
-     * Y coordinate on town map
-     */
-    int townMapY;
-    /**
-     * Name of associated map
-     */
-    std::string mapName;
-    /**
-     * Starting elevation
-     */
-    int elevation;
-    /**
-     * Starting tile number
-     */
-    int tileNum;
-    /**
-     * Starting orientation
-     */
-    int orientation;
-};
-
-/**
- * @brief City information.
- */
-struct City
-{
-    enum class Size
+    namespace Format
     {
-        Small = 1, Medium, Large
-    };
+        namespace Txt
+        {
+            /**
+             * @brief City entrance information.
+             */
+            struct CityEntrance
+            {
+                /**
+                 * Start state of entrance (visible or not)
+                 */
+                bool startState;
+                /**
+                 * X coordinate on town map
+                 */
+                int townMapX;
+                /**
+                 * Y coordinate on town map
+                 */
+                int townMapY;
+                /**
+                 * Name of associated map
+                 */
+                std::string mapName;
+                /**
+                 * Starting elevation
+                 */
+                int elevation;
+                /**
+                 * Starting tile number
+                 */
+                int tileNum;
+                /**
+                 * Starting orientation
+                 */
+                int orientation;
+            };
 
-    std::string name;
-    int worldX = 0;
-    int worldY = 0;
-    bool startState;
-    Size size;
+            /**
+             * @brief City information.
+             */
+            struct City
+            {
+                enum class Size
+                {
+                    Small = 1, Medium, Large
+                };
 
-    int townMapArtIdx;
-    int townMapLabelArtIdx;
+                std::string name;
+                int worldX = 0;
+                int worldY = 0;
+                bool startState;
+                Size size;
 
-    std::vector<CityEntrance> entrances;
-};
+                int townMapArtIdx;
+                int townMapLabelArtIdx;
 
-/**
- * @brief CITY.TXT
- */
-class CityFile : public Dat::Item
-{
-public:
-    CityFile(Dat::Stream&& stream);
+                std::vector<CityEntrance> entrances;
+            };
 
-    const std::vector<City>& cities() const;
+            /**
+             * @brief CITY.TXT
+             */
+            class CityFile : public BaseFormatFile
+            {
+                public:
+                    explicit CityFile(ttvfs::CountedPtr<ttvfs::File> file);
 
-protected:
-    std::vector<City> _cities;
+                    const std::vector<City>& cities() const;
+
+                protected:
+                    std::vector<City> _cities;
 
 
-    void _parseText(std::istream& istr);
+                    void _parseText(std::istream& istr);
 
-    City::Size _sizeByName(std::string name) const;
-};
-
-}
-}
+                    City::Size _sizeByName(std::string name) const;
+            };
+        }
+    }
 }
 #endif //FALLTERGEIST_FORMAT_TXT_CITYFILE_H

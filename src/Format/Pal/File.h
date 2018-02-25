@@ -29,37 +29,28 @@
 #include <vector>
 
 // Falltergeist includes
-#include "../Dat/Item.h"
-#include "../Pal/Color.h"
+#include "../../Format/BaseFormatFile.h"
+#include "../../Format/Pal/Color.h"
 
 // Third party includes
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Dat
-{
-class Stream;
-}
+    namespace Format
+    {
+        namespace Pal
+        {
+            class File : public BaseFormatFile
+            {
+                public:
+                    explicit File(ttvfs::CountedPtr<ttvfs::File> file);
 
-namespace Pal
-{
+                    const Color* color(unsigned index) const;
 
-class File : public Dat::Item
-{
-
-public:
-    File(Dat::Stream&& stream);
-
-    const Color* color(unsigned index) const;
-
-protected:
-    std::vector<Color> _colors;
-
-};
-
-}
-}
+                protected:
+                    std::vector<Color> _colors;
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_PAL_FILE_H

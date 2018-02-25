@@ -35,29 +35,23 @@
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Txt
-{
-
-/**
- * @brief Base class for text file parsers with some helper functions.
- */
-class Parser
-{
-public:
-    static std::vector<std::string> split(char delim, const std::string& source);
-
-    static void trim(std::string& value);
-
-    static void rtrim(std::string& value);
-
-    static void ltrim(std::string& value);
-
-    static void toLower(std::string& value);
-};
-
-}
-}
+    namespace Format
+    {
+        namespace Txt
+        {
+            /**
+             * @brief Base class for text file parsers with some helper functions.
+             */
+            class Parser
+            {
+                public:
+                    static std::vector<std::string> split(char delim, const std::string& source);
+                    static void trim(std::string& value);
+                    static void rtrim(std::string& value);
+                    static void ltrim(std::string& value);
+                    static void toLower(std::string& value);
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_TXT_PARSER_H

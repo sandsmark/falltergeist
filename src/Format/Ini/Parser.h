@@ -38,39 +38,35 @@
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Ini
-{
+    namespace Format
+    {
+        namespace Ini
+        {
+            class File;
+            class Value;
 
-class File;
-class Value;
+            /**
+             * @brief Parser of INI files.
+             * Parses INI-like TXT files, such as MAPS.TXT, CITY.TXT, etc.
+             */
+            class Parser : public Txt::Parser
+            {
+                public:
+                    Parser(std::istream &stream);
+                    ~Parser();
 
-/**
- * @brief Parser of INI files.
- * Parses INI-like TXT files, such as MAPS.TXT, CITY.TXT, etc.
- */
-class Parser : public Txt::Parser
-{
-public:
-    Parser(std::istream &stream);
-    ~Parser();
+                    std::unique_ptr<File> parse();
 
-    std::unique_ptr<File> parse();
+                    static Array parseArray(const std::string& value);
 
-    static Array parseArray(const std::string& value);
+                private:
+                    std::istream &_stream; // stream to parse
+                    std::string  _section; // current section
 
-private:
-    std::istream &_stream; // stream to parse
-    std::string  _section; // current section
-
-protected:
-
-    void _stripComments(std::string& line);
-
-};
-
-}
-}
+                protected:
+                    void _stripComments(std::string& line);
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_INI_PARSER_H

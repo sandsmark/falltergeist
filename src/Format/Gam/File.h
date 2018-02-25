@@ -30,42 +30,35 @@
 #include <string>
 
 // Falltergeist includes
-#include "../Dat/Item.h"
+#include "../../Format/BaseFormatFile.h"
 
 // Third party includes
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Dat
-{
-class Stream;
-}
+    namespace Format
+    {
+        namespace Gam
+        {
+            class File : public BaseFormatFile
+            {
+                public:
+                    explicit File(ttvfs::CountedPtr<ttvfs::File> file);
+                    std::map<std::string, int>* GVARS();
+                    std::map<std::string, int>* MVARS();
+                    int GVAR(std::string name);
+                    int GVAR(unsigned int number);
+                    int MVAR(std::string name);
+                    int MVAR(unsigned int number);
 
-namespace Gam
-{
-
-class File : public Dat::Item
-{
-public:
-    File(Dat::Stream&& stream);
-    std::map<std::string, int>* GVARS();
-    std::map<std::string, int>* MVARS();
-    int GVAR(std::string name);
-    int GVAR(unsigned int number);
-    int MVAR(std::string name);
-    int MVAR(unsigned int number);
-
-protected:
-    std::map<std::string, int> _GVARS;
-    std::map<std::string, int> _MVARS;
-    bool _GVARmode = false;
-    bool _MVARmode = false;
-    void _parseLine(std::string line);
-};
-
-}
-}
+                protected:
+                    std::map<std::string, int> _GVARS;
+                    std::map<std::string, int> _MVARS;
+                    bool _GVARmode = false;
+                    bool _MVARmode = false;
+                    void _parseLine(std::string line);
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_GAM_FILE_H

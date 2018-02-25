@@ -38,33 +38,28 @@
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Acm
-{
+    namespace Format
+    {
+        namespace Acm
+        {
+            class Decoder
+            {
+                public:
+                    explicit Decoder(int lev_cnt);
+                    virtual ~Decoder();
 
-class Decoder
-{
+                    int init();
 
-public:
-    Decoder(int lev_cnt);
-    virtual ~Decoder();
+                    void decodeData(int *buffer, int blocks);
 
-    int init();
+                private:
+                    int _levels, _blockSize;
+                    int *_memoryBuffer;
 
-    void decodeData(int *buffer, int blocks);
-
-private:
-    int _levels, _blockSize;
-    int *_memoryBuffer;
-
-    void _sub4d3fcc(short *memory, int *buffer, int sbSize, int blocks);
-
-    void _sub4d420c(int *memory, int *buffer, int sbSize, int blocks);
-
-};
-
-}
-}
+                    void _sub4d3fcc(short *memory, int *buffer, int sbSize, int blocks);
+                    void _sub4d420c(int *memory, int *buffer, int sbSize, int blocks);
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_ACM_DECODER_H

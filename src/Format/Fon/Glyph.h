@@ -33,36 +33,32 @@
 
 // Third party includes
 
-
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Fon
-{
+    namespace Format
+    {
+        namespace Fon
+        {
+            class Glyph
+            {
+                public:
+                    Glyph(uint32_t width, uint32_t height);
 
-class Glyph
-{
-public:
-    Glyph(uint32_t width, uint32_t height);
+                    uint32_t width() const;
+                    void setWidth(uint32_t width);
 
-    uint32_t width() const;
-    void setWidth(uint32_t width);
+                    uint32_t height() const;
+                    void setHeight(uint32_t height);
 
-    uint32_t height() const;
-    void setHeight(uint32_t height);
+                    uint32_t dataOffset() const;
+                    void setDataOffset(uint32_t value);
 
-    uint32_t dataOffset() const;
-    void setDataOffset(uint32_t value);
-
-protected:
-    uint16_t _width = 0;
-    uint16_t _height = 0;
-    uint32_t _dataOffset = 0;
-
-};
-
-}
-}
+                protected:
+                    uint16_t _width = 0;
+                    uint16_t _height = 0;
+                    uint32_t _dataOffset = 0;
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_FON_GLYPH_H

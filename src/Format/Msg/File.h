@@ -29,36 +29,28 @@
 #include <vector>
 
 // Falltergeist includes
-#include "../../Format/Dat/Item.h"
+#include "../../Format/BaseFormatFile.h"
 #include "../../Format/Msg/Message.h"
 
 // Third party includes
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Dat
-{
-class Stream;
-}
+    namespace Format
+    {
+        namespace Msg
+        {
+            class File : public BaseFormatFile
+            {
+                public:
+                    explicit File(ttvfs::CountedPtr<ttvfs::File> file);
 
-namespace Msg
-{
+                    Message* message(unsigned int number);
 
-class File : public Dat::Item
-{
-public:
-    File(Dat::Stream&& stream);
-
-    Message* message(unsigned int number);
-
-private:
-    std::vector<Message> _messages;
-
-};
-
-}
-}
+                private:
+                    std::vector<Message> _messages;
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_MSG_FILE_H

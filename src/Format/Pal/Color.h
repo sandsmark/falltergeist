@@ -34,45 +34,41 @@
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Pal
-{
+    namespace Format
+    {
+        namespace Pal
+        {
+            class Color
+            {
+                public:
+                    Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+                    ~Color();
 
-class Color
-{
+                    operator int() const;
+                    operator unsigned int() const;
 
-public:
-    Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
-    ~Color();
+                    void setRed(uint8_t red);
+                    uint8_t red() const;
 
-    operator int() const;
-    operator unsigned int() const;
+                    void setGreen(uint8_t green);
+                    uint8_t green() const;
 
-    void setRed(uint8_t red);
-    uint8_t red() const;
+                    void setBlue(uint8_t blue);
+                    uint8_t blue() const;
 
-    void setGreen(uint8_t green);
-    uint8_t green() const;
+                    void setAlpha(uint8_t alpha);
+                    uint8_t alpha() const;
 
-    void setBlue(uint8_t blue);
-    uint8_t blue() const;
+                    void nomod();
 
-    void setAlpha(uint8_t alpha);
-    uint8_t alpha() const;
-
-    void nomod();
-protected:
-    uint8_t _red;
-    uint8_t _green;
-    uint8_t _blue;
-    uint8_t _alpha;
-    bool _nomod = false;
-
-
-};
-
-}
-}
+                protected:
+                    uint8_t _red;
+                    uint8_t _green;
+                    uint8_t _blue;
+                    uint8_t _alpha;
+                    bool _nomod = false;
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_PAL_COLOR_H

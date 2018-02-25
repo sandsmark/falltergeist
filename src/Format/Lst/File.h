@@ -30,37 +30,29 @@
 #include <vector>
 
 // Falltergeist includes
-#include "../Dat/Item.h"
+#include "../../Format/BaseFormatFile.h"
 
 // Third party includes
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Dat
-{
-class Stream;
-}
+    namespace Format
+    {
+        namespace Lst
+        {
+            class File : public BaseFormatFile
+            {
+                public:
+                    explicit File(ttvfs::CountedPtr<ttvfs::File> file);
 
-namespace Lst
-{
+                    // TODO: return by reference
+                    std::vector<std::string>* strings();
 
-class File : public Dat::Item
-{
-public:
-    File(Dat::Stream&& stream);
-
-    // TODO: return by reference
-    std::vector<std::string>* strings();
-
-protected:
-    std::vector<std::string> _strings;
-    void _addString(std::string line);
-
-};
-
-}
-}
+                protected:
+                    std::vector<std::string> _strings;
+                    void _addString(std::string line);
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_LST_FILE_H

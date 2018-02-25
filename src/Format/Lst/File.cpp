@@ -28,69 +28,61 @@
 #include <cctype>
 
 // Falltergeist includes
-#include "../Dat/Stream.h"
-#include "../Lst/File.h"
+#include "../../Format/Lst/File.h"
 
 // Third party includes
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Lst
-{
-
-File::File(Dat::Stream&& stream)
-{
-    stream.setPosition(0);
-
-    std::string line;
-    unsigned char ch;
-    for (unsigned int i = 0; i != stream.size(); ++i)
+    namespace Format
     {
-        stream >> ch;
-        if (ch == 0x0D) // \r
+        namespace Lst
         {
-            // do nothing
-        }
-        else if (ch == 0x0A) // \n
-        {
-            _addString(line);
-            line.clear();
-        }
-        else
-        {
-            line += ch;
+            File::File(ttvfs::CountedPtr<ttvfs::File> file) : BaseFormatFile(file)
+            {
+                _file->seek(0, SEEK_SET);
+
+                std::string line;
+                unsigned char ch;
+                for (unsigned int i = 0; i != _file->size(); ++i) {
+                    *this >> ch;
+                    if (ch == 0x0D) { // \r
+                        // do nothing
+                    } else if (ch == 0x0A) {  // \n
+                        _addString(line);
+                        line.clear();
+                    } else {
+                        line += ch;
+                    }
+                }
+                if (line.size() != 0) {
+                    _addString(line);
+                }
+            }
+
+            void File::_addString(std::string line)
+            {
+                // strip comments
+                if (auto pos = line.find(";")) {
+                    line = line.substr(0, pos);
+                }
+
+                // rtrim
+                line.erase(std::find_if(line.rbegin(), line.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), line.end());
+
+                // replace slashes
+                std::replace(line.begin(),line.end(),'\\','/');
+
+                // to lower
+                std::transform(line.begin(),line.end(),line.begin(), ::tolower);
+
+                _strings.push_back(line);
+            }
+
+            std::vector<std::string>* File::strings()
+            {
+                return &_strings;
+            }
         }
     }
-    if (line.size() != 0)
-    {
-        _addString(line);
-    }
-}
-
-void File::_addString(std::string line)
-{
-    // strip comments
-    if (auto pos = line.find(";")) line = line.substr(0, pos);
-
-    // rtrim
-    line.erase(std::find_if(line.rbegin(), line.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), line.end());
-
-    // replace slashes
-    std::replace(line.begin(),line.end(),'\\','/');
-
-    // to lower
-    std::transform(line.begin(),line.end(),line.begin(), ::tolower);
-
-    _strings.push_back(line);
-}
-
-std::vector<std::string>* File::strings()
-{
-    return &_strings;
-}
-
-}
-}
 }

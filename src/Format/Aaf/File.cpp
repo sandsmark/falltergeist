@@ -42,57 +42,47 @@ namespace Falltergeist
                 file->open("r");
                 file->seek(0, SEEK_SET);
 
-                _signature     = stream.uint32(); // should be "AAFF"
-                _maximumHeight = stream.uint16();
-                _horizontalGap = stream.uint16();
-                _spaceWidth    = stream.uint16();
-                _verticalGap   = stream.uint16();
+                *this
+                    >> _signature // should be "AAFF"
+                    >> _maximumHeight
+                    >> _horizontalGap
+                    >> _spaceWidth
+                    >> _verticalGap;
 
                 // Glyphs info
-                for (unsigned i = 0; i != 256; ++i)
-                {
-                    uint16_t width  = stream.uint16();
-                    uint16_t height = stream.uint16();
-                    uint32_t offset = stream.uint32();
+                for (unsigned i = 0; i != 256; ++i) {
+                    uint16_t width, height;
+                    uint32_t offset;
+                    *this >> width >> height >> offset;
 
-                    if (width > _maximumWidth)
-                    {
+                    if (width > _maximumWidth) {
                         _maximumWidth = width;
                     }
 
-                    _glyphs.push_back(Glyph(width, height));
+                    _glyphs.emplace_back(Glyph(width, height));
                     _glyphs.back().setDataOffset(offset);
                 }
 
-                _loadRgba(stream);
-            }
-
-            void File::_loadRgba(Dat::Stream& stream)
-            {
                 //_rgba = new uint32_t[_maximumWidth * _maximumHeight * 256]();
                 // leave 1 px around glyph
                 _rgba.resize((_maximumWidth + 2) * 16 * (_maximumHeight + 2) * 16);
 
-                for (unsigned i = 0; i != 256; ++i)
-                {
+                for (unsigned i = 0; i != 256; ++i) {
                     uint32_t glyphY = (i/16) * _maximumHeight+(i/16)*2+1;
                     uint32_t glyphX = (i%16) * _maximumWidth+(i%16)*2+1;
 
                     // Move glyph to bottom
                     glyphY += _maximumHeight - _glyphs.at(i).height();
 
-                    stream.setPosition(0x080C + _glyphs.at(i).dataOffset());
+                    _file->seek(0x080C + _glyphs.at(i).dataOffset(), SEEK_SET);
 
-                    for (uint16_t y = 0; y != _glyphs.at(i).height(); ++y)
-                    {
-                        for (uint16_t x = 0; x != _glyphs.at(i).width(); ++x)
-                        {
-                            uint8_t byte = stream.uint8();
-                            if (byte != 0)
-                            {
+                    for (uint16_t y = 0; y != _glyphs.at(i).height(); ++y) {
+                        for (uint16_t x = 0; x != _glyphs.at(i).width(); ++x) {
+                            uint8_t byte;
+                            *this >> byte;
+                            if (byte != 0) {
                                 uint8_t alpha = 0;
-                                switch (byte)
-                                {
+                                switch (byte) {
                                     case 7:
                                         alpha = 255;
                                         break;
@@ -122,6 +112,7 @@ namespace Falltergeist
                         }
                     }
                 }
+                _file->close();
             }
 
             uint32_t* File::rgba()

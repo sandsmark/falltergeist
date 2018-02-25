@@ -35,54 +35,52 @@
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Ini
-{
+    namespace Format
+    {
+        namespace Ini
+        {
+            class Value;
 
-class Value;
+            typedef std::vector<std::pair<std::string, Value>> Array;
 
-typedef std::vector<std::pair<std::string, Value>> Array;
+            /**
+             * @brief A value in INI file.
+             * A wrapper for std::string with conversion functions to various types.
+             */
+            class Value
+            {
+                public:
+                    Value(const std::string &value = "");
 
-/**
- * @brief A value in INI file.
- * A wrapper for std::string with conversion functions to various types.
- */
-class Value
-{
-public:
-    Value(const std::string &value = "");
+                    void operator =(const std::string&);
 
-    void operator =(const std::string&);
+                    /*template <class T>
+                    explicit operator T() const;*/
 
-    /*template <class T>
-    explicit operator T() const;*/
+                    operator std::string() const;
 
-    operator std::string() const;
+                    const std::string& str() const;
 
-    const std::string& str() const;
+                    int toInt() const;
 
-    int toInt() const;
+                    double toDouble() const;
 
-    double toDouble() const;
+                    bool toBool() const;
 
-    bool toBool() const;
-
-    Array toArray() const;
+                    Array toArray() const;
 
 
-private:
-    std::string _value;
+                private:
+                    std::string _value;
 
-};
+            };
 
-inline std::ostream& operator <<(std::ostream& stream, const Value& value)
-{
-    stream << value.str();
-    return stream;
-}
-
-}
-}
+            inline std::ostream& operator <<(std::ostream& stream, const Value& value)
+            {
+                stream << value.str();
+                return stream;
+            }
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_INI_VALUE_H

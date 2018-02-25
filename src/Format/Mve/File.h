@@ -29,35 +29,29 @@
 #include <vector>
 
 // Falltergeist includes
-#include "../Dat/Item.h"
-#include "../Dat/Stream.h"
+#include "../../Format/BaseFormatFile.h"
 #include "../Enums.h"
 
 // Third party includes
 
 namespace Falltergeist
 {
-namespace Format
-{
+    namespace Format
+    {
+        namespace Mve
+        {
+            class Chunk;
 
-namespace Mve
-{
-class Chunk;
+            class File : public BaseFormatFile
+            {
+                public:
+                    explicit File(ttvfs::CountedPtr<ttvfs::File> file);
+                    std::unique_ptr<Chunk> getNextChunk();
 
-class File : public Dat::Item
-{
-public:
-    File(Dat::Stream&& stream);
-    std::unique_ptr<Chunk> getNextChunk();
-
-    // set the position of underlying stream
-    void setPosition(unsigned int position);
-
-protected:
-    Dat::Stream _stream;
-};
-
-}
-}
+                    // set the position of underlying stream
+                    void setPosition(unsigned int position);
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_MVE_FILE_H

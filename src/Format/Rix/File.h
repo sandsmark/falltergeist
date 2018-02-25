@@ -29,41 +29,33 @@
 
 // Falltergeist includes
 #include "../../Base/Buffer.h"
-#include "../Dat/Item.h"
+#include "../../Format/BaseFormatFile.h"
 #include "../Enums.h"
 
 // Third party includes
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Dat
-{
-class Stream;
-}
+    namespace Format
+    {
+        namespace Rix
+        {
+            class File : public BaseFormatFile
+            {
+                public:
+                    explicit File(ttvfs::CountedPtr<ttvfs::File> file);
 
-namespace Rix
-{
+                    uint16_t width() const;
+                    uint16_t height() const;
 
-class File : public Dat::Item
-{
-public:
-    File(Dat::Stream&& stream);
+                    uint32_t* rgba();
 
-    uint16_t width() const;
-    uint16_t height() const;
-
-    uint32_t* rgba();
-
-protected:
-    uint16_t _width = 0;
-    uint16_t _height = 0;
-    Base::Buffer<uint32_t> _rgba;
-
-};
-
-}
-}
+                protected:
+                    uint16_t _width = 0;
+                    uint16_t _height = 0;
+                    Base::Buffer<uint32_t> _rgba;
+            };
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_RIX_FILE_H

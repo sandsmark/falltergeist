@@ -26,7 +26,6 @@
 #include <cstdint>
 
 // Falltergeist includes
-#include "../../Format/Dat/Stream.h"
 #include "../../Format/Bio/File.h"
 
 // Third party includes
@@ -50,7 +49,6 @@ namespace Falltergeist
             {
                 return _text;
             }
-
         }
     }
 }

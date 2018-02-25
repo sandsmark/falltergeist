@@ -30,208 +30,200 @@
 #include <vector>
 
 // Falltergeist includes
-#include "../Dat/Item.h"
+#include "../../Format/BaseFormatFile.h"
 
 // Third party includes
 
 namespace Falltergeist
 {
-namespace Format
-{
+    namespace Format
+    {
+        namespace Ini
+        {
+            class Value;
+        }
 
-namespace Dat
-{
-class Stream;
-}
+        namespace Txt
+        {
+            struct EndDeath
+            {
+                /**
+                 * GVAR_* number for the variable controlling the slide.
+                 */
+                int globalVar = -1;
 
-namespace Ini
-{
-class Value;
-}
+                /**
+                 * value that the gvar must be >= to for this slide to be shown
+                 */
+                int minValue = 0;
 
-namespace Txt
-{
+                /**
+                 * # of a worldmap area that has to be known in order to get this one as an option
+                 */
+                int worldAreaKnown = -1;
 
-struct EndDeath
-{
-    /**
-     * GVAR_* number for the variable controlling the slide.
-     */
-    int globalVar = -1;
+                /**
+                 *  # of a worldmap area that has to be *not* known in order to get this one as an option
+                 */
+                int worldAreaNotKnown = -1;
 
-    /**
-     * value that the gvar must be >= to for this slide to be shown
-     */
-    int minValue = 0;
+                /**
+                 * minimum player level in order to get this one as an option
+                 */
+                int minLevel = 0;
 
-    /**
-     * # of a worldmap area that has to be known in order to get this one as an option
-     */
-    int worldAreaKnown = -1;
+                /**
+                 * % chance of a given line to occur
+                 */
+                unsigned char chance = 0;
 
-    /**
-     *  # of a worldmap area that has to be *not* known in order to get this one as an option
-     */
-    int worldAreaNotKnown = -1;
+                /**
+                 * base filename (no path path or extension) used for the narrator voice-over and subtitles.  Maximum of 8 characters.
+                 */
+                std::string narratorFile;
+            };
 
-    /**
-     * minimum player level in order to get this one as an option
-     */
-    int minLevel = 0;
+            struct EndGame
+            {
+                /**
+                 * GVAR_* number for the variable controlling the slide.
+                 */
+                int globalVar = -1;
 
-    /**
-     * % chance of a given line to occur
-     */
-    unsigned char chance = 0;
+                /**
+                 * Value that the gvar must be equal to for this slide to be shown.
+                 */
+                int value = 0;
 
-    /**
-     * base filename (no path path or extension) used for the narrator voice-over and subtitles.  Maximum of 8 characters.
-     */
-    std::string narratorFile;
-};
+                /**
+                 * Line number in art\intrface\intrface.lst of the image to use for that slide.
+                 * If art_num is the number for the panning desert image (currently 327),
+                 * then that image is panned in the direction indicated by the direction field.
+                 */
+                int artIdx = -1;
 
-struct EndGame
-{
-    /**
-     * GVAR_* number for the variable controlling the slide.
-     */
-    int globalVar = -1;
+                /**
+                 * Base filename (no path path or extension) used for the narrator voice-over and subtitles.  Maximum of 8 characters.
+                 */
+                std::string narratorFile;
 
-    /**
-     * Value that the gvar must be equal to for this slide to be shown.
-     */
-    int value = 0;
+                /**
+                 * direction to pan the image.  A value of -1 pans right-to-left, 1 pans left-to-right.
+                 * This value is only used if the art number corresponds to the panning desert image (currently 327)
+                 */
+                int direction = 0;
+            };
 
-    /**
-     * Line number in art\intrface\intrface.lst of the image to use for that slide.
-     * If art_num is the number for the panning desert image (currently 327),
-     * then that image is panned in the direction indicated by the direction field.
-     */
-    int artIdx = -1;
+            struct GenRep
+            {
+                /**
+                 * amount game_global_vars[GVAR_PLAYER_REPUTATION] must be greater than or equal to in order for that name to be used.
+                 */
+                int threshold;
 
-    /**
-     * Base filename (no path path or extension) used for the narrator voice-over and subtitles.  Maximum of 8 characters.
-     */
-    std::string narratorFile;
+                /**
+                 * number of the message in editor.msg with the reputation name.
+                 */
+                int messageId;
+            };
 
-    /**
-     * direction to pan the image.  A value of -1 pans right-to-left, 1 pans left-to-right.
-     * This value is only used if the art number corresponds to the panning desert image (currently 327)
-     */
-    int direction = 0;
-};
+            struct Holodisk
+            {
+                /**
+                 * GVAR_* number for the variable corresponding to the holodisk.
+                 */
+                int globalVar;
 
-struct GenRep
-{
-    /**
-     * amount game_global_vars[GVAR_PLAYER_REPUTATION] must be greater than or equal to in order for that name to be used.
-     */
-    int threshold;
+                /**
+                 * Number of the message in pipboy.msg with the title of the holodisk.
+                 */
+                int titleMessageId;
 
-    /**
-     * number of the message in editor.msg with the reputation name.
-     */
-    int messageId;
-};
+                /**
+                 * number of the message in pipboy.msg where the text for the holodisk starts.
+                 * Numbers in the range of (text)-(text+500) are used for that holodisk.
+                 */
+                int textMessageId;
+            };
 
-struct Holodisk
-{
-    /**
-     * GVAR_* number for the variable corresponding to the holodisk.
-     */
-    int globalVar;
+            struct KarmaVar
+            {
+                /**
+                 * GVAR_* number for the variable corresponding to the karma.
+                 */
+                int globalVar;
 
-    /**
-     * Number of the message in pipboy.msg with the title of the holodisk.
-     */
-    int titleMessageId;
+                /**
+                 * number of the skilldex art (line number in art\skilldex\skilldex.lst)
+                 */
+                int artIdx;
 
-    /**
-     * number of the message in pipboy.msg where the text for the holodisk starts.
-     * Numbers in the range of (text)-(text+500) are used for that holodisk.
-     */
-    int textMessageId;
-};
+                /**
+                 * name is the number of the message in editor.msg with the karma name.
+                 */
+                int nameMessageId;
 
-struct KarmaVar
-{
-    /**
-     * GVAR_* number for the variable corresponding to the karma.
-     */
-    int globalVar;
+                /**
+                 * description is the number of the message in editor.msg with the karma description.
+                 */
+                int descriptionMessageId;
+            };
 
-    /**
-     * number of the skilldex art (line number in art\skilldex\skilldex.lst)
-     */
-    int artIdx;
+            struct Quest
+            {
+                /**
+                 * location is the number of the message in map.msg describing the location
+                 */
+                int locationMessageId;
 
-    /**
-     * name is the number of the message in editor.msg with the karma name.
-     */
-    int nameMessageId;
+                /**
+                 * description is the number of the message in quest.msg with the quest description.
+                 */
+                int descriptionMessageId;
 
-    /**
-     * description is the number of the message in editor.msg with the karma description.
-     */
-    int descriptionMessageId;
-};
+                /**
+                 * gvar_index is the GVAR_* number for the variable controlling the quest.
+                 */
+                int globalVar;
 
-struct Quest
-{
-    /**
-     * location is the number of the message in map.msg describing the location
-     */
-    int locationMessageId;
+                /**
+                 * display_threshold is the minimum value that the gvar must be for this quest to be displayed in the pipboy.
+                 */
+                int displayTreshold;
 
-    /**
-     * description is the number of the message in quest.msg with the quest description.
-     */
-    int descriptionMessageId;
+                /**
+                 * completed_threshold is the minimum value that the gvar must be for this quest to be shown as completed in the pipboy.
+                 */
+                int completedThreshold;
+            };
 
-    /**
-     * gvar_index is the GVAR_* number for the variable controlling the quest.
-     */
-    int globalVar;
+            template <typename ItemType>
+            class CSVBasedFile : BaseFormatFile
+            {
+                public:
+                    explicit CSVBasedFile(ttvfs::CountedPtr<ttvfs::File> file);
 
-    /**
-     * display_threshold is the minimum value that the gvar must be for this quest to be displayed in the pipboy.
-     */
-    int displayTreshold;
+                    const std::list<ItemType>& items() const;
 
-    /**
-     * completed_threshold is the minimum value that the gvar must be for this quest to be shown as completed in the pipboy.
-     */
-    int completedThreshold;
-};
+                protected:
+                    void _parseText(std::istream& istr);
 
-template <typename ItemType>
-class CSVBasedFile : public Dat::Item
-{
-public:
-    CSVBasedFile(Dat::Stream&& stream);
+                    /**
+                     * Parses next item
+                     * @throws std::out_of_range if row is invalid and should be skipped
+                     */
+                    ItemType _parseItem(const std::vector<Ini::Value>& row);
 
-    const std::list<ItemType>& items() const;
+                    std::list<ItemType> _items;
+            };
 
-protected:
-    void _parseText(std::istream& istr);
-
-    /**
-     * Parses next item
-     * @throws std::out_of_range if row is invalid and should be skipped
-     */
-    ItemType _parseItem(const std::vector<Ini::Value>& row);
-
-    std::list<ItemType> _items;
-};
-
-typedef CSVBasedFile<EndDeath> EndDeathFile;
-typedef CSVBasedFile<EndGame> EndGameFile;
-typedef CSVBasedFile<GenRep> GenRepFile;
-typedef CSVBasedFile<Holodisk> HolodiskFile;
-typedef CSVBasedFile<KarmaVar> KarmaVarFile;
-typedef CSVBasedFile<Quest> QuestsFile;
-
-}
-}
+            typedef CSVBasedFile<EndDeath> EndDeathFile;
+            typedef CSVBasedFile<EndGame> EndGameFile;
+            typedef CSVBasedFile<GenRep> GenRepFile;
+            typedef CSVBasedFile<Holodisk> HolodiskFile;
+            typedef CSVBasedFile<KarmaVar> KarmaVarFile;
+            typedef CSVBasedFile<Quest> QuestsFile;
+        }
+    }
 }
 #endif // FALLTERGEIST_FORMAT_TXT_CSVBASEDFILE_H

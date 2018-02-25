@@ -42,7 +42,7 @@ namespace Falltergeist
             class File : public BaseFormatFile
             {
                 public:
-                    File(ttvfs::CountedPtr<ttvfs::File> file);
+                    explicit File(ttvfs::CountedPtr<ttvfs::File> file);
 
                     std::string text();
 

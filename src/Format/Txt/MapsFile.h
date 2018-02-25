@@ -29,69 +29,62 @@
 #include <vector>
 
 // Falltergeist includes
-#include "../Dat/Item.h"
+#include "../../Format/BaseFormatFile.h"
 
 // Third party includes
 
 namespace Falltergeist
 {
-namespace Format
-{
-namespace Dat
-{
-class Stream;
-}
+    namespace Format
+    {
+        namespace Txt
+        {
+            struct MapStartPoint
+            {
+                int elevation = 0;
+                int tileNum = 0;
+            };
 
-namespace Txt
-{
+            /**
+             * @brief Map information.
+             */
+            struct Map
+            {
+                static const char NUM_ELEVATIONS = 3;
 
-struct MapStartPoint
-{
-    int elevation = 0;
-    int tileNum = 0;
-};
+                std::string name;
+                std::string lookupName;
+                std::string music;
+                /**
+                 * Keys are sfx names, value - probability in %. Probabilities *should* sum up to 100.
+                 */
+                std::map<std::string, unsigned char> ambientSfx;
+                bool deadBodiesAge;
+                /**
+                 * Flag for each elevation.
+                 */
+                bool canRestHere[NUM_ELEVATIONS] = {true, true, true};
+                bool saved;
 
-/**
- * @brief Map information.
- */
-struct Map
-{
-    static const char NUM_ELEVATIONS = 3;
+                std::vector<MapStartPoint> randomStartPoints;
+            };
 
-    std::string name;
-    std::string lookupName;
-    std::string music;
-    /**
-     * Keys are sfx names, value - probability in %. Probabilities *should* sum up to 100.
-     */
-    std::map<std::string, unsigned char> ambientSfx;
-    bool deadBodiesAge;
-    /**
-     * Flag for each elevation.
-     */
-    bool canRestHere[NUM_ELEVATIONS] = {true, true, true};
-    bool saved;
+            /**
+             * @brief CITY.TXT
+             */
+            class MapsFile : public BaseFormatFile
+            {
+                public:
+                    explicit MapsFile(ttvfs::CountedPtr<ttvfs::File> file);
 
-    std::vector<MapStartPoint> randomStartPoints;
-};
+                    const std::vector<Map>& maps() const;
 
-/**
- * @brief CITY.TXT
- */
-class MapsFile : public Dat::Item
-{
-public:
-    MapsFile(Dat::Stream&& stream);
+                protected:
+                    std::vector<Map> _maps;
 
-    const std::vector<Map>& maps() const;
-
-protected:
-    std::vector<Map> _maps;
-
-    void _parseText(std::istream& istr);
-};
-
-}
-}
+                    void _parseText(std::istream& istr);
+            };
+        }
+    }
 }
 #endif //FALLTERGEIST_FORMAT_TXT_MAPSFILE_H
