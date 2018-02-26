@@ -81,10 +81,12 @@ if(NOT GLM_FOUND)
 endif(NOT GLM_FOUND)
 include_directories(${GLM_INCLUDE_DIR})
 
-add_subdirectory(vendor/ttvfs)
-include_directories(${TTVFS_INCLUDE_DIRS})
+include_directories(vendor/ttvfs)
+include_directories(vendor)
 
 add_subdirectory(vendor/ttvfs_dat2)
+add_subdirectory(vendor/ttvfs)
+
 include_directories(${TTVFS_DAT2_INCLUDE_DIRS})
 
 file(GLOB_RECURSE SOURCES  src/*.cpp)

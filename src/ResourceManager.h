@@ -34,8 +34,7 @@
 #include "Logger.h"
 
 // Third party includes
-#include <ttvfs.h>
-#include <ttvfs_dat2.h>
+#include <ttvfs/ttvfs.h>
 
 namespace Falltergeist
 {
@@ -93,16 +92,20 @@ namespace Falltergeist
                     auto itemPtr = std::dynamic_pointer_cast<T>(itemIt->second);
                     if (!itemPtr) {
                         Logger::error("RESOURCE MANAGER") << "Requested file type does not match type in the cache: " << filename << std::endl;
+                        return nullptr;
                     }
+                    Logger::info("RESOURCE MANAGER") << "From CACHE: " << filename << std::endl;
                     return itemPtr;
                 }
 
                 ttvfs::CountedPtr<ttvfs::File> file = _root.GetFile(filename.c_str());
                 if (!file) {
+                    Logger::error("RESOURCE MANAGER") << "Not Found: " << filename << std::endl;
                     return nullptr;
                 }
                 auto ptr = std::make_shared<T>(file);
                 _cachedFiles.emplace(filename, ptr);
+                Logger::info("RESOURCE MANAGER") << "Found: " << filename << std::endl;
                 return ptr;
             }
 

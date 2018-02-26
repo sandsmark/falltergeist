@@ -23,6 +23,7 @@
  */
 
 // C++ standard includes
+#include <algorithm>
 
 // Falltergeist includes
 #include "../Format/BaseFormatFile.h"
@@ -45,6 +46,10 @@ namespace Falltergeist
         BaseFormatFile& BaseFormatFile::operator>>(int32_t &value)
         {
             _file->read(reinterpret_cast<char *>(&value), sizeof(value));
+            if (_changeEndianness) {
+                char *istart = reinterpret_cast<char *>(&value), *iend = istart + sizeof(value);
+                std::reverse(istart, iend);
+            }
             return *this;
         }
 
@@ -56,6 +61,10 @@ namespace Falltergeist
         BaseFormatFile& BaseFormatFile::operator>>(int16_t &value)
         {
             _file->read(reinterpret_cast<char *>(&value), sizeof(value));
+            if (_changeEndianness) {
+                char *istart = reinterpret_cast<char *>(&value), *iend = istart + sizeof(value);
+                std::reverse(istart, iend);
+            }
             return *this;
         }
 
@@ -78,7 +87,7 @@ namespace Falltergeist
         uint32_t BaseFormatFile::uint32()
         {
             uint32_t value;
-            _file->read(reinterpret_cast<char *>(&value), sizeof(value));
+            *this >> value;
             return value;
         }
 
@@ -90,7 +99,7 @@ namespace Falltergeist
         uint16_t BaseFormatFile::uint16()
         {
             uint16_t value;
-            _file->read(reinterpret_cast<char *>(&value), sizeof(value));
+            *this >> value;
             return value;
         }
 
@@ -102,7 +111,7 @@ namespace Falltergeist
         uint8_t BaseFormatFile::uint8()
         {
             uint8_t value;
-            _file->read(reinterpret_cast<char *>(&value), sizeof(value));
+            *this >> value;
             return value;
         }
 

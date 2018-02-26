@@ -37,7 +37,7 @@ namespace Falltergeist
         {
             File::File(ttvfs::CountedPtr<ttvfs::File> file) : BaseFormatFile(file)
             {
-                _file->open();
+                file->open();
                 _file->seek(0, SEEK_SET);
 
                 // Signature
@@ -70,6 +70,7 @@ namespace Falltergeist
                 for (unsigned i = 0; i != (unsigned)_width * _height; ++i) {
                     _rgba[i] = palette[uint8()];
                 }
+                file->close();
             }
 
             uint16_t File::width() const

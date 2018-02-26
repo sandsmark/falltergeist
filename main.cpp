@@ -29,8 +29,6 @@
 #include "src/Format/Bio/File.h"
 
 // Third party includes
-#include <ttvfs.h>
-#include <ttvfs_dat2.h>
 
 using namespace Falltergeist;
 

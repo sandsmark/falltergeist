@@ -34,7 +34,7 @@
 // Falltergeist includes
 
 // Third party includes
-#include <ttvfs.h>
+#include <ttvfs/ttvfs.h>
 
 #define UNPACKER_BUFFER_SIZE 16384
 

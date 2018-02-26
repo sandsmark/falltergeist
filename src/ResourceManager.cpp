@@ -61,6 +61,7 @@
 
 // Third party includes
 #include <SDL_image.h>
+#include <ttvfs_dat2/ttvfs_dat2.h>
 
 namespace Falltergeist
 {

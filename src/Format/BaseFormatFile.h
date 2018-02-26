@@ -31,7 +31,7 @@
 // Falltergeist includes
 
 // Third party includes
-#include <ttvfs.h>
+#include <ttvfs/ttvfs.h>
 
 namespace Falltergeist
 {
@@ -62,6 +62,8 @@ namespace Falltergeist
 
             protected:
                 ttvfs::CountedPtr<ttvfs::File> _file;
+
+                bool _changeEndianness = false;
         };
     }
 }

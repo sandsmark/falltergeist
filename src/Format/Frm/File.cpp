@@ -42,7 +42,8 @@ namespace Falltergeist
         {
             File::File(ttvfs::CountedPtr<ttvfs::File> file) : BaseFormatFile(file)
             {
-                _file->open();
+                _changeEndianness = true;
+                file->open();
                 _file->seek(0, SEEK_SET);
 
                 *this >> _version >> _framesPerSecond >> _actionFrame >> _framesPerDirection;
@@ -95,6 +96,7 @@ namespace Falltergeist
                         _file->read(frame.data(), frame.width() * frame.height());
                     }
                 }
+                file->close();
             }
 
             uint32_t File::version() const
