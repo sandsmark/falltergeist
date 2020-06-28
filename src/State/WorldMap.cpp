@@ -11,6 +11,9 @@
 #include "../UI/ImageButton.h"
 #include "../UI/ImageList.h"
 #include "../UI/TextArea.h"
+#include "../Format/Txt/WorldmapFile.h"
+
+#include <iostream>
 
 namespace Falltergeist
 {
@@ -31,6 +34,17 @@ namespace Falltergeist
 
             setModal(true);
             setFullscreen(true);
+
+            _worldmapFile = ResourceManager::getInstance()->worldmapTxt();
+            tilesNumberX = _worldmapFile->numHorizontalTiles;
+            tilesNumberY = _worldmapFile->tiles.size() / _worldmapFile->numHorizontalTiles;
+
+            for (int x=0; x<tilesNumberX; x++) {
+                for (int y=0; y<tilesNumberY; y++) {
+                    std::cout << _worldmapFile->tiles[x + y * tilesNumberX].artIdx << std::endl;
+                    std::cout << ResourceManager::getInstance()->FIDtoFrmName(_worldmapFile->tiles[x + y * tilesNumberX].artIdx) << std::endl;
+                }
+            }
 
             unsigned int renderWidth = Game::getInstance()->renderer()->width();
             unsigned int renderHeight = Game::getInstance()->renderer()->height();
@@ -114,10 +128,22 @@ namespace Falltergeist
                 deltaY = worldMapSizeY - mapHeight;
             }
 
+            // panel
+            unsigned int panelX;
+            unsigned int panelY;
+
+            if (Game::getInstance()->settings()->worldMapFullscreen()) {
+                panelX = renderWidth - 168; // only panel right
+            } else {
+                panelX = (renderWidth - _panel->size().width()) / 2;
+            }
+            panelY = (renderHeight - _panel->size().height()) / 2;
+
             signed int worldTileMinX; // start X coordinate of current tile on world map
             signed int worldTileMinY; // start Y coordinate of current tile on world map
             // NB: can be unsigned, but it compared with signed deltaX and deltaY, so...
 
+//            std::cout << tilesNumberX << " x " << tilesNumberY << std::endl;
             // copy tiles to screen if needed
             for (unsigned int y=0; y<tilesNumberY; y++)
             {
@@ -126,38 +152,39 @@ namespace Falltergeist
                     _tiles->setCurrentImage(y*tilesNumberX+x);
                     worldTileMinX = x*tileWidth;
                     worldTileMinY = y*tileHeight;
+
+                    const int tileIndex = y*tilesNumberX+x;
+                    const int tileX = x*tileWidth-deltaX;
+                    const int tileY = y*tileHeight-deltaY;
+//                    if (x * tileWidth < 100) {
+//                        continue;
+//                    }
+
                     // checking if tile is visible on screenMap
                     // checking current tile borders
                     // either xmin or xmax SHOULD belongs to map area AND
                     // either ymin or ymax SHOULD belongs to map area
-                    if((((deltaX<=worldTileMinX) && (worldTileMinX<=deltaX+(signed int)mapWidth)) ||
-                        ((deltaX<=worldTileMinX+(signed int)tileWidth) && (worldTileMinX+(signed int)tileWidth<=deltaX+(signed int)mapWidth))) &&
-                        (((deltaY<=worldTileMinY) && (worldTileMinY<=deltaY+(signed int)mapHeight)) ||
-                        ((deltaY<=worldTileMinY+(signed int)tileHeight) && (worldTileMinY+(signed int)tileHeight<=deltaY+(signed int)mapHeight))) )
-                    {
-                        _tiles->images().at(y*tilesNumberX+x)->setPosition(Point(x*tileWidth-deltaX, y*tileHeight-deltaY));
-                        _tiles->images().at(y*tilesNumberX+x)->render();
+                    if ((deltaX > worldTileMinX || worldTileMinX > deltaX+mapWidth) &&
+                        (deltaX > worldTileMinX+tileWidth || worldTileMinX+tileWidth > deltaX+mapWidth)) {
+                        continue;
                     }
+
+                    if ((deltaY > worldTileMinY || worldTileMinY > deltaY+mapHeight) &&
+                        (deltaY > worldTileMinY+tileHeight || worldTileMinY+tileHeight > deltaY+mapHeight))
+                    {
+                        continue;
+                    }
+
+//                    std::cout << "x " << x << " tilex " << tileX << " deltax " << deltaX << std::endl;
+//                    std::cout << "y " << y << " tiley " << tileY << " deltay " << deltaY << std::endl;
+                    _tiles->images().at(tileIndex)->setPosition(Point(tileX, tileY));
+                    _tiles->images().at(tileIndex)->render();
                 }
             }
 
             // hostpot show
             _hotspot->setPosition(Point(mapMinX + worldMapX - deltaX, mapMinY + worldMapY - deltaY));
             _hotspot->render();
-
-            // panel
-            unsigned int panelX;
-            unsigned int panelY;
-
-            if (Game::getInstance()->settings()->worldMapFullscreen())
-            {
-                panelX = renderWidth - 168; // only panel right
-            }
-            else
-            {
-                panelX = (renderWidth - _panel->size().width()) / 2;
-            }
-            panelY = (renderHeight - _panel->size().height()) / 2;
 
             _panel->setPosition(Point(panelX, panelY));
             _panel->render();

@@ -992,7 +992,7 @@ namespace Falltergeist
                                 return;
                             }
 
-                            auto mapsFile = ResourceManager::getInstance()->mapsTxt();
+                            Format::Txt::MapsFile *mapsFile = ResourceManager::getInstance()->mapsTxt();
                             std::string mapName = mapsFile->maps().at(exitGrid->exitMapNumber()).name;
 
                             GameLocationHelper gameLocationHelper;

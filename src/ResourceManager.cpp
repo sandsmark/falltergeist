@@ -328,7 +328,7 @@ Graphics::Texture* ResourceManager::texture(const string& filename)
     return texture;
 }
 
-Graphics::Font* ResourceManager::font(const string& filename)
+Graphics::Font *ResourceManager::font(const string& filename)
 {
 
     if (_fonts.count(filename))
@@ -348,7 +348,7 @@ Graphics::Font* ResourceManager::font(const string& filename)
         fontPtr = new Graphics::FON(filename);
     }
     _fonts.emplace(filename, std::unique_ptr<Graphics::Font>(fontPtr));
-    return fontPtr;
+    return _fonts.at(filename).get();
 }
 
 

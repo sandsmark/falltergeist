@@ -4,6 +4,8 @@
 #include "../Txt/Lexer.h"
 #include "../Txt/WorldmapFile.h"
 
+#include <iostream>
+
 namespace Falltergeist
 {
     namespace Format
@@ -113,6 +115,8 @@ namespace Falltergeist
                             }
                         }
                         tiles.push_back(std::move(tile));
+                    } else {
+                        std::cout << "section name " << section.name() << std::endl;
                     }
                 }
             }

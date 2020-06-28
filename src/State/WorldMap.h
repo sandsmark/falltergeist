@@ -5,6 +5,11 @@
 
 namespace Falltergeist
 {
+    namespace Format {
+        namespace Txt {
+            class WorldmapFile;
+        }
+    }
     namespace UI
     {
         namespace Factory
@@ -36,6 +41,7 @@ namespace Falltergeist
             private:
                 std::shared_ptr<UI::IResourceManager> resourceManager;
                 std::unique_ptr<UI::Factory::ImageButtonFactory> imageButtonFactory;
+                Format::Txt::WorldmapFile* _worldmapFile = nullptr;
 
                 UI::Image* _panel = nullptr;
                 UI::ImageList* _tiles = nullptr;
