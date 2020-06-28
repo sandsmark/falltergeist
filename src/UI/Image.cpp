@@ -37,5 +37,15 @@ namespace Falltergeist
         {
             sprite->renderScaled(position().x(), position().y(), size.width(), size.height(), eggTransparency, light(), _outline);
         }
+
+        void Image::renderCropped(const Point offset, const Size size)
+        {
+            sprite->trans(_trans);
+            sprite->renderCropped(position().x(), position().y(),
+                                  offset.x(), offset.y(),
+                                  size.width(), size.height(),
+                                  false, light(), _lightLevel);
+
+        }
     }
 }

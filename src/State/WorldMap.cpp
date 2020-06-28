@@ -10,8 +10,10 @@
 #include "../UI/Image.h"
 #include "../UI/ImageButton.h"
 #include "../UI/ImageList.h"
+#include "../UI/Rectangle.h"
 #include "../UI/TextArea.h"
 #include "../Format/Txt/WorldmapFile.h"
+#include "../Format/Txt/CityFile.h"
 
 #include <iostream>
 
@@ -42,9 +44,10 @@ namespace Falltergeist
             for (int x=0; x<tilesNumberX; x++) {
                 for (int y=0; y<tilesNumberY; y++) {
                     std::cout << _worldmapFile->tiles[x + y * tilesNumberX].artIdx << std::endl;
-                    std::cout << ResourceManager::getInstance()->FIDtoFrmName(_worldmapFile->tiles[x + y * tilesNumberX].artIdx) << std::endl;
                 }
             }
+
+            _citiesFile = ResourceManager::getInstance()->cityTxt();
 
             unsigned int renderWidth = Game::getInstance()->renderer()->width();
             unsigned int renderHeight = Game::getInstance()->renderer()->height();
@@ -72,6 +75,9 @@ namespace Falltergeist
                 resourceManager->getImage("art/intrface/wrldmp18.frm"),
                 resourceManager->getImage("art/intrface/wrldmp19.frm")
             });
+
+            _cityOutline = new UI::Rectangle(Point(0, 0), Graphics::Size(32, 32), {0x3f, 0xf8, 0x00, 0xff} );
+            _cityName = new UI::TextArea(0, 0);
 
             //auto cross = new Image("art/intrface/wmaploc.frm");
             _hotspot = imageButtonFactory->getByType(ImageButtonType::MAP_HOTSPOT, {0, 0});
@@ -166,23 +172,32 @@ namespace Falltergeist
                     // either ymin or ymax SHOULD belongs to map area
                     if ((deltaX > worldTileMinX || worldTileMinX > deltaX+mapWidth) &&
                         (deltaX > worldTileMinX+tileWidth || worldTileMinX+tileWidth > deltaX+mapWidth)) {
-                        continue;
+//                        continue;
                     }
 
                     if ((deltaY > worldTileMinY || worldTileMinY > deltaY+mapHeight) &&
                         (deltaY > worldTileMinY+tileHeight || worldTileMinY+tileHeight > deltaY+mapHeight))
                     {
-                        continue;
+//                        continue;
                     }
 
-//                    std::cout << "x " << x << " tilex " << tileX << " deltax " << deltaX << std::endl;
-//                    std::cout << "y " << y << " tiley " << tileY << " deltay " << deltaY << std::endl;
                     _tiles->images().at(tileIndex)->setPosition(Point(tileX, tileY));
-                    _tiles->images().at(tileIndex)->render();
+                    _tiles->images().at(tileIndex)->render();// todo renderCropped();
                 }
             }
 
-            // hostpot show
+            for (const Format::Txt::City &city : _citiesFile->cities()) {
+                _cityOutline->setX(city.worldX - deltaX);
+                _cityOutline->setY(city.worldY - deltaY);
+                _cityOutline->render();
+
+                _cityName->setY(_cityOutline->y() + _cityOutline->height());
+                _cityName->setX(_cityOutline->x());
+                _cityName->setText(city.name);
+                _cityName->render();
+            }
+
+            // hotspot show
             _hotspot->setPosition(Point(mapMinX + worldMapX - deltaX, mapMinY + worldMapY - deltaY));
             _hotspot->render();
 

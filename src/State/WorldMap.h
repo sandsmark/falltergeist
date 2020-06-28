@@ -8,6 +8,7 @@ namespace Falltergeist
     namespace Format {
         namespace Txt {
             class WorldmapFile;
+            class CityFile;
         }
     }
     namespace UI
@@ -19,6 +20,8 @@ namespace Falltergeist
         class Image;
         class ImageButton;
         class ImageList;
+        class Rectangle; // TODO, needs to be a circle
+        class TextArea;
     }
     namespace State
     {
@@ -41,11 +44,14 @@ namespace Falltergeist
             private:
                 std::shared_ptr<UI::IResourceManager> resourceManager;
                 std::unique_ptr<UI::Factory::ImageButtonFactory> imageButtonFactory;
-                Format::Txt::WorldmapFile* _worldmapFile = nullptr;
+                Format::Txt::WorldmapFile *_worldmapFile = nullptr;
+                Format::Txt::CityFile *_citiesFile = nullptr;
 
                 UI::Image* _panel = nullptr;
                 UI::ImageList* _tiles = nullptr;
                 UI::ImageButton* _hotspot = nullptr;
+                UI::Rectangle* _cityOutline = nullptr;
+                UI::TextArea* _cityName = nullptr;
 
                 // temporary!
                 // @todo: move it to other place!

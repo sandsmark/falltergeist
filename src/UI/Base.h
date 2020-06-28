@@ -5,7 +5,6 @@
 #include "../Graphics/Point.h"
 #include "../Graphics/Size.h"
 #include "../Graphics/TransFlags.h"
-#include "../UI/Base.h"
 
 namespace Falltergeist
 {

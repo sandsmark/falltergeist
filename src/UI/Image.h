@@ -22,6 +22,8 @@ namespace Falltergeist
 
                 virtual void render(const Size &size, bool eggTransparency = false) override;
 
+                void renderCropped(const Point offset, const Size size);
+
                 bool opaque(unsigned int x, unsigned int y);
                 virtual bool opaque(const Point &position) override;
 
